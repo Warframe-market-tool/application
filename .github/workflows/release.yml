@@ -10,19 +10,48 @@ env:
 
 
 jobs:
-  release-exec:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install ps2exe module
+      run: |
+        Install-Module -Name ps2exe -Scope AllUsers -Force -AllowClobber
+        Import-Module ps2exe
+        Get-Command -Module ps2exe
+      shell: powershell
+
+    - name: Run build script
+      run: |
+        .\build.ps1
+      shell: powershell
+      
+    - name: List files in dist directory
+      run: dir dist
+    
+    - name: Upload folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WarframeMarketTool-${{ github.event.release.tag_name }}
+        path: dist/
+  
+  create-release:
     runs-on: ubuntu-latest
     
     steps:
-    
     - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
-        name: WarframeMarketTool-${{ github.event.release.tag_name }}"
-
+        name: WarframeMarketTool-${{ github.event.release.tag_name }}
+    - name: List files in directory
+      run: dir
+      
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
