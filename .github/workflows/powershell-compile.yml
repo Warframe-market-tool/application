@@ -1,0 +1,37 @@
+name: Build the powershell script to an executable and create an archive to download the program
+
+on:
+  release:
+    types: [published]
+permissions:
+  contents: read
+  
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up PowerShell Core
+      uses: actions/setup-powershell@v2
+
+    - name: Install ps2exe module
+      run: |
+        Install-Module -Name ps2exe -Scope CurrentUser -Force -AllowClobber
+      shell: pwsh
+
+    - name: Run build script
+      run: |
+        ./build.cmd
+      shell: cmd
+    
+    - name: List files in dist directory
+      run: dir dist
+    
+    - name: Upload folder as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: WarframeMarketTool-v${{ github.event.release.tag_name }}
+        path: dist/
