@@ -51,6 +51,7 @@ jobs:
       with:
         name: WarframeMarketTool-${{ github.event.release.tag_name }}
         path: dist/
+    
     - name: List files in directory
       run: dir
       
@@ -63,5 +64,5 @@ jobs:
         omitNameDuringUpdate: true
         omitBody: true
         omitPrereleaseDuringUpdate: true
-        artifacts: dist/*.zip
+        artifacts: dist
   
