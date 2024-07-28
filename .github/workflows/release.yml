@@ -41,6 +41,8 @@ jobs:
   create-release:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout code
@@ -54,7 +56,7 @@ jobs:
     
     - name: Zip the build artifacts
       run: |
-        zip -r WarframeMarketTool-${{ env.tag_name }}.zip ./output/*
+        zip -r WarframeMarketTool-${{ github.event.release.tag_name }}.zip ./output/*
     
     - name: List files in directory
       run: dir output
@@ -68,5 +70,5 @@ jobs:
         omitNameDuringUpdate: true
         omitBody: true
         omitPrereleaseDuringUpdate: true
-        artifacts: ./*.zip
+        artifacts: "WarframeMarketTool-${{ github.event.release.tag_name }}.zip"
   
