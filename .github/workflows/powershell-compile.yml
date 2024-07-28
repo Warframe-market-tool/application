@@ -26,7 +26,7 @@ jobs:
     - name: Run build script
       run: |
         .\build.cmd
-      shell: pwsh
+      shell: cmd
     
     - name: List files in dist directory
       run: dir dist
