@@ -17,27 +17,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
-    - name: Setup PowerShell Toolkit
-      uses: hugoalh-studio/setup-powershell-toolkit-ghaction@v2.0.0
-      with:
-        # {Boolean} Whether to execute in sudo mode on non-Windows environment.
-        sudo: False # optional, default is False
-        # {String} Target version.
-        version: "^2.1.0" # optional, default is ^2.1.0
-        # {Boolean} Whether to allow target pre release version.
-        allowprerelease: False # optional, default is False
-        # {String} Installation scope.
-        scope: "CurrentUser" # optional, default is CurrentUser
-        # {Boolean} Whether to force install or reinstall target (pre release) version.
-        force: False # optional, default is False
-        # {Boolean} Whether to keep the setting that modified.
-        keepsetting: False # optional, default is False
-          
       
     - name: Install ps2exe module
       run: |
-        Install-Module -Name ps2exe -Scope CurrentUser -Force -AllowClobber
+        Install-Module -Name ps2exe -Scope AllUsers -Force -AllowClobber
+        Import-Module ps2exe
+        Get-Command -Module ps2exe
       shell: pwsh
 
     - name: Run build script
