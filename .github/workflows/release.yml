@@ -1,0 +1,74 @@
+name: Release
+run-name: "Release ${{ github.event.release.tag_name }}"
+
+on:
+  release:
+    types: [ published ]
+
+env:
+  BUILD_TYPE: Release
+
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install ps2exe module
+      run: |
+        Install-Module -Name ps2exe -Scope AllUsers -Force -AllowClobber
+        Import-Module ps2exe
+        Get-Command -Module ps2exe
+      shell: powershell
+
+    - name: Run build script
+      run: |
+        .\build.ps1
+      shell: powershell
+      
+    - name: List files in dist directory
+      run: dir dist
+    
+    - name: Upload folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WarframeMarketTool-${{ github.event.release.tag_name }}
+        path: dist/
+  
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: WarframeMarketTool-${{ github.event.release.tag_name }}
+        path: output/
+    
+    - name: Zip the build artifacts
+      run: |
+        zip -r WarframeMarketTool-${{ github.event.release.tag_name }}.zip ./output/*
+    
+    - name: List files in directory
+      run: dir
+      
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.event.release.tag_name }}
+        allowUpdates: true
+        omitNameDuringUpdate: true
+        omitBody: true
+        omitPrereleaseDuringUpdate: true
+        artifacts: "WarframeMarketTool-${{ github.event.release.tag_name }}.zip"
+  
