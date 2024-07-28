@@ -3,10 +3,6 @@ name: Build the powershell script to an executable and create an archive to down
 on:
   release:
     types: [published]
-  push:
-    branches:
-      - github-action
-
 permissions:
   contents: read
   
