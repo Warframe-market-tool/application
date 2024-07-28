@@ -59,7 +59,7 @@ jobs:
         zip -r WarframeMarketTool-${{ github.event.release.tag_name }}.zip ./output/*
     
     - name: List files in directory
-      run: dir output
+      run: dir
       
     - name: Create Release
       uses: ncipollo/release-action@v1
