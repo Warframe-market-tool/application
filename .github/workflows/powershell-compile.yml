@@ -29,7 +29,7 @@ jobs:
       run: dir dist
     
     - name: Upload folder as artifact
-      uses: actions/upload-artifact@v4.3.4
+      uses: actions/upload-artifact@v4
       with:
         name: WarframeMarketTool-${{ github.ref_name }}
         path: dist/
@@ -43,10 +43,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Download build artifacts
-      uses: actions/download-artifact@v4.1.8
+      uses: actions/download-artifact@v4
       with:
-        name: dist
-        path: dist
+        name: WarframeMarketTool-${{ github.ref_name }}
 
     - name: Create GitHub Release
       uses: ncipollo/release-action@v1.14.0
