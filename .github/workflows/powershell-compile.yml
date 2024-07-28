@@ -17,7 +17,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
+    
+    - name: Install powershell
+      uses: cakhanif/action-install-powershell@v1
+    
     - name: Install ps2exe module
       run: |
         Install-Module -Name ps2exe -Scope CurrentUser -Force -AllowClobber
