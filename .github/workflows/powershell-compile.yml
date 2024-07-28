@@ -5,7 +5,7 @@ on:
     types: [published]
   push:
     branches:
-      - * 
+      - github-action
 
 permissions:
   contents: read
