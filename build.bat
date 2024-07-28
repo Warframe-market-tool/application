@@ -1,4 +1,7 @@
 @echo off
+
+powershell -Command "Import-Module ps2exe"
+
 REM Compile the PowerShell script into an executable
 powershell -Command "Invoke-ps2exe .\WarframeMarketTool.ps1 .\dist\WarframeMarketTool.exe"
 
