@@ -25,7 +25,7 @@ jobs:
 
     - name: Run build script
       run: |
-        & ".\build.cmd"
+        Start-Process "cmd.exe" -ArgumentList "/c build.cmd"
       shell: pwsh
     
     - name: List files in dist directory
