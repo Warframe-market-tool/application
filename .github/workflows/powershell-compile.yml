@@ -27,8 +27,8 @@ jobs:
 
     - name: Run build script
       run: |
-        .\build.bat
-      shell: cmd
+        .\build.ps1
+      shell: pwsh
     
     - name: List files in dist directory
       run: dir dist
