@@ -5,7 +5,7 @@ on:
   push:
     # Don't run for tags
     tags-ignore:
-      - 'v*.*.*'
+      - '*.*.*'
     branches:
       - '**'
   
