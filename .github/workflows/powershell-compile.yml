@@ -23,13 +23,9 @@ jobs:
         Install-Module -Name ps2exe -Scope AllUsers -Force -AllowClobber
         Import-Module ps2exe
         Get-Command -Module ps2exe
-      shell: pwsh
-
-    - name: Run build script
-      run: |
         .\build.ps1
       shell: pwsh
-    
+
     - name: List files in dist directory
       run: dir dist
     
