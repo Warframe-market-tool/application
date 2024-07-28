@@ -23,7 +23,7 @@ jobs:
         Install-Module -Name ps2exe -Scope AllUsers -Force -AllowClobber
         Import-Module ps2exe
         Get-Command -Module ps2exe
-      shell: pwsh
+      shell: powershell
 
     - name: Run build script
       run: |
