@@ -1,10 +1,9 @@
 name: Build the powershell script to an executable and create an archive to download the program
 
 on:
-  release:
-    types: [published]
-permissions:
-  contents: read
+  push:
+    tags:
+      - 'v*.*.*'  # This triggers the workflow when a new tag is pushed, typically used for releases
   
 jobs:
   build:
