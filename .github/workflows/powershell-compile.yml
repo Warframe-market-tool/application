@@ -12,14 +12,11 @@ permissions:
   
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
-    
-    - name: Install powershell
-      uses: cakhanif/action-install-powershell@v1
+      uses: actions/checkout@v4
     
     - name: Install ps2exe module
       run: |
