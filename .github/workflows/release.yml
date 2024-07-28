@@ -39,6 +39,7 @@ jobs:
         path: dist/
   
   create-release:
+    needs: build
     runs-on: ubuntu-latest
     
     steps:
