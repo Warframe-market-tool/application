@@ -1,0 +1,36 @@
+name: Release
+run-name: "Release ${{ github.event.release.tag_name }}"
+
+on:
+  release:
+    types: [ published ]
+
+env:
+  BUILD_TYPE: Release
+
+
+jobs:
+  release-exec:
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: WarframeMarketTool-${{ github.event.release.tag_name }}"
+
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.event.release.tag_name }}
+        allowUpdates: true
+        omitNameDuringUpdate: true
+        omitBody: true
+        omitPrereleaseDuringUpdate: true
+        artifacts: dist/*.zip
+  
