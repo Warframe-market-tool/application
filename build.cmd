@@ -1,6 +1,6 @@
 @echo off
 REM Compile the PowerShell script into an executable
-powershell -Command "Invoke-ps2exe .\WarframeMarketTool.ps1 .\bin\WarframeMarketTool.exe"
+powershell -Command "Invoke-ps2exe .\WarframeMarketTool.ps1 .\dist\WarframeMarketTool.exe"
 
 REM Create the bin directory if it doesn't exist
 if not exist ".\dist\" (
