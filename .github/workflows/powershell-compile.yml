@@ -22,17 +22,17 @@ jobs:
       uses: hugoalh-studio/setup-powershell-toolkit-ghaction@v2.0.0
       with:
         # {Boolean} Whether to execute in sudo mode on non-Windows environment.
-        sudo: # optional, default is False
+        sudo: False # optional, default is False
         # {String} Target version.
-        version: # optional, default is ^2.1.0
+        version: "^2.1.0" # optional, default is ^2.1.0
         # {Boolean} Whether to allow target pre release version.
-        allowprerelease: # optional, default is False
+        allowprerelease: False # optional, default is False
         # {String} Installation scope.
-        scope: # optional, default is CurrentUser
+        scope: "CurrentUser" # optional, default is CurrentUser
         # {Boolean} Whether to force install or reinstall target (pre release) version.
-        force: # optional, default is False
+        force: False # optional, default is False
         # {Boolean} Whether to keep the setting that modified.
-        keepsetting: # optional, default is False
+        keepsetting: False # optional, default is False
           
       
     - name: Install ps2exe module
