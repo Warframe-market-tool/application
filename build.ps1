@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 # Import the ps2exe module
 Import-Module ps2exe
 # Compile the PowerShell script into an executable
-ps2exes WarframeMarketTool.ps1 dist\WarframeMarketTool.exe
+ps2exe WarframeMarketTool.ps1 dist\WarframeMarketTool.exe
 
 # Create the dist directory if it doesn't exist
 if (-not (Test-Path -Path ".\dist")) {
