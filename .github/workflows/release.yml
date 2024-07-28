@@ -50,10 +50,9 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: WarframeMarketTool-${{ github.event.release.tag_name }}
-        path: dist/
-    
+        path: output/
     - name: List files in directory
-      run: dir
+      run: dir output
       
     - name: Create Release
       uses: ncipollo/release-action@v1
