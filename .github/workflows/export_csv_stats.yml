@@ -12,7 +12,7 @@ on:
 
 jobs:
   export-and-push:
-    runs-on: ubuntu-latest
+    runs-on: windows  -latest
 
     steps:
     - name: Checkout this repository
@@ -82,9 +82,8 @@ jobs:
 
     - name: Run the artifact with --export-csv
       run: |
-        chmod +x dist/WarframeMarketTool.exe
         ./dist/WarframeMarketTool.exe --export-csv
-      shell: bash
+      shell: powershell
 
     - name: Clone the target repository
       run: |
