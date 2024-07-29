@@ -17,32 +17,15 @@ jobs:
     steps:
     - name: Checkout this repository
       uses: actions/checkout@v4
-
-    - name: Get specific workflow run ID
-      run: |
-        # Fetch the workflow runs and find the run with the specified name
-        run_id=$(gh api -X GET /repos/${{ github.repository }}/actions/runs | jq -r --arg name "Release 0.0.0" '.workflow_runs[] | select(.name == $name) | .id')
-        echo "run_id=$run_id" >> $GITHUB_ENV
-        echo "Run ID: $run_id"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: List artifacts from the specified run
-      run: |
-        # Fetch artifacts for the specific run ID
-        artifacts=$(gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.run_id }}/artifacts)
-        artifact_id=$(echo $artifacts | jq -r --arg name "${{ github.event.inputs.artifact_name }}" '.artifacts[] | select(.name == $name) | .id')
-        echo "artifact_id=$artifact_id" >> $GITHUB_ENV
-        echo "Artifact ID: $artifact_id"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+  
     - name: Download build artifacts
       uses: actions/download-artifact@v4
+      run: |
+        run_id=$(gh api -X GET /repos/${{ github.repository }}/actions/runs | jq -r --arg name "Release 0.0.0" '.workflow_runs[] | select(.name == $name) | .id')
       with:
         name: WarframeMarketTool-latest
         path: dist/
-        run-id: ${{env.run_id}}
+        run-id: $run_id
 
     - name: Update config.json with secrets
       run: |
