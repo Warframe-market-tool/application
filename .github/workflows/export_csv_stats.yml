@@ -22,7 +22,7 @@ jobs:
       id: get-specific-run-id
       run: |
         # Fetch the workflow runs and find the run with the specified name
-        run_id=$(gh api -X GET /repos/${{ github.repository }}/actions/runs | jq -r --arg name "Release 0.0.0" '.workflow_runs[] | select(.name == $name) | .id')
+        run_id=$(gh api -X GET /repos/${{ github.repository }}/actions/runs | jq -r --arg name Release 0.0.0 '.workflow_runs[] | select(.name == $name) | .id')
         echo "run_id=$run_id" >> $GITHUB_ENV
         echo "Run ID: $run_id"
       env:
@@ -31,9 +31,9 @@ jobs:
     - name: List artifacts from the latest run
       id: list-artifacts
       run: |
-        artifact_name=$(gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.latest_run_id }}/artifacts | jq -r --arg name "${{ github.event.inputs.artifact_name }}" '.artifacts[] | select(.name == $name) | .name')
-        echo "artifact_name=$artifact_name" >> $GITHUB_ENV
-        echo "artifact_name=$artifact_name"
+        artifacts=$(gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.run_id }}/artifacts)
+        echo "artifact_name=$artifacts" >> $GITHUB_ENV
+        echo "artifact_name=$artifacts"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
