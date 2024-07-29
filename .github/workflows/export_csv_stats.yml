@@ -32,12 +32,13 @@ jobs:
       run: |
         artifact_name=$(gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.latest_run_id }}/artifacts | jq -r --arg name "${{ github.event.inputs.artifact_name }}" '.artifacts[] | select(.name == $name) | .name')
         echo "artifact_name=$artifact_name" >> $GITHUB_ENV
+        echo "artifact_name=$artifact_name"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Download the artifact
       run: |
-        gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.latest_run_id }}/artifacts/${{ env.artifact_name  }}/zip --output artifact.zip
+        gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.latest_run_id }}/artifacts/WarframeMarketTool-latest.zip --output artifact.zip
         ls -al
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
