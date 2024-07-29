@@ -7,6 +7,7 @@ $OMXMLPath = Join-Path $ExePath 'Views\OrderManagement.xaml'
 $ConfigPath = Join-Path $ExePath 'config.json'
 $cookieJwtPath = Join-Path $ExePath 'jwt.txt'
 $statsPath = Join-Path $ExePath 'csv\set_stats.csv'
+$csvPath = Join-Path $ExePath 'csv'
 # Load the XML files
 Add-Type -AssemblyName PresentationFramework
 [xml]$MainXML  = Get-Content $MainXMLPath
@@ -284,12 +285,18 @@ $StartButton.Add_Click({
     $StateTextBlock.Foreground = "green"
 })
 
-$SetStatsButton = $Main.FindName("SetStats")
-$SetStatsButton.Add_Click({
-    $StateTextBlock.Text = "Unavailable"
-    $StateTextBlock.Foreground = "red"
-    [System.Windows.Forms.Application]::DoEvents()
-    if((Test-Path $statsPath) -and (dir $statsPath).CreationTime.Date -eq (Get-Date).Date)
+function Export-Stats {
+
+    param(
+        [switch]$RunGui
+    )
+
+    if ($RunGui) {
+        $StateTextBlock.Text = "Unavailable"
+        $StateTextBlock.Foreground = "red"
+        [System.Windows.Forms.Application]::DoEvents()
+    }
+    if((Test-Path $statsPath) -and (dir $statsPath).CreationTime.Date -eq (Get-Date).Date -and $RunGui)
     {
         Get-Content $statsPath | ConvertFrom-Csv | Out-GridView
     }
@@ -320,12 +327,33 @@ $SetStatsButton.Add_Click({
             }
             Start-Sleep -Milliseconds 500
         }
-        $stats | Out-GridView
+        #Test if the csv file exist
+        if (-not (Test-Path -Path $csvPath)) {
+            New-Item -ItemType Directory -Path $csvPath
+        }
         $stats | ConvertTo-Csv | Out-File $statsPath
+        if ($RunGui){
+            $stats | Out-GridView
+        }
+        
     }
-    $StateTextBlock.Text = "Available"
-    $StateTextBlock.Foreground = "green"
+    if ($RunGui) {
+        $StateTextBlock.Text = "Available"
+        $StateTextBlock.Foreground = "green"
+    }
+}
+
+$SetStatsButton = $Main.FindName("SetStats")
+$SetStatsButton.Add_Click({
+    Export-Stats -RunGui
 })
 
+
+################## Arg pass to the program ##########################
+
+if ($args -contains "--export-csv") {
+    Export-Stats
+    Exit
+}
 
 $Main.ShowDialog() | Out-Null
