@@ -14,7 +14,7 @@ Invoke-ps2exe .\WarframeMarketTool.ps1 .\dist\WarframeMarketTool.exe
 Copy-Item -Path ".\Views" -Destination ".\dist\Views" -Recurse -Force
 
 # Copy the config.json file to the dist directory
-Copy-Item -Path ".\config.json" -Destination ".\dist\config.json" -Force
+Copy-Item -Path ".\config_base.json" -Destination ".\dist\config.json" -Force
 
 Write-Host "###################################################################################"
 Write-Host "Build process completed."
