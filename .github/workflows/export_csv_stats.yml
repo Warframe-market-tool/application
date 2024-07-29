@@ -49,7 +49,7 @@ jobs:
           exit 1
         fi
 
-        echo "run_id=$run_id" >> $GITHUB_ENV
+        echo "run_id='$run_id'" >> $GITHUB_ENV
         echo "Run ID: $run_id"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
