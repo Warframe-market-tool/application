@@ -18,12 +18,13 @@ jobs:
     - name: Checkout this repository
       uses: actions/checkout@v4
 
-    - name: Get latest workflow run ID
+    - name: Get specific workflow run ID
       id: get-specific-run-id
       run: |
-        run_id=$(gh api -X GET /repos/${{ github.repository }}/actions/runs | jq -r --arg name "Release 0.0.0" '.workflow_runs[] | select(.name == $name) | .id')
+        # Fetch the workflow runs and find the run with the specified name
+        run_id=$(gh api -X GET /repos/${{ github.repository }}/actions/runs | jq -r --arg name "${{ github.event.inputs.run_name }}" '.workflow_runs[] | select(.name == $name) | .id')
         echo "run_id=$run_id" >> $GITHUB_ENV
-        echo "run_id=$run_id"
+        echo "Run ID: $run_id"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
