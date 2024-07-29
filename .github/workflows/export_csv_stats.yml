@@ -66,7 +66,6 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
-        name: WarframeMarketTool-latest
         path: dist/
         run-id: 10151320645
     
