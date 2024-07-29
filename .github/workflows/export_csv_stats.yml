@@ -102,7 +102,7 @@ jobs:
     - name: Run the artifact with --export-csv
       run: |
         .\dist\WarframeMarketTool.exe --export-csv
-      shell: powershell
+      shell: cmd
     
 
     - name: Upload csv folder as artifact
