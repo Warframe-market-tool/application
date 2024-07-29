@@ -112,7 +112,7 @@ jobs:
         path: dist/csv/
 
   push_csv_file:
-    need: run_csv_tool
+    needs: run_csv_tool
     runs-on: ubuntu-latest
     
     steps:
