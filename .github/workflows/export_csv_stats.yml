@@ -21,7 +21,7 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
-        name: WarframeMarketTool-latest
+        name: WarframeMarketTool-0.0.0
         path: dist/
 
     - name: Update config.json with secrets
