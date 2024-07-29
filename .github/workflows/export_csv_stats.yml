@@ -76,6 +76,7 @@ jobs:
         dir dist
         jq '.email = env.EMAIL' dist/config.json > dist/config.tmp && mv dist/config.tmp dist/config.json
         jq '.password = env.PASSWORD' dist/config.json > dist/config.tmp && mv dist/config.tmp dist/config.json
+        cat dist/config.json
       env:
         EMAIL: ${{ secrets.WARFRAME_BOT_EMAIL }}
         PASSWORD: ${{ secrets.WARFRAME_BOT_PASSWORD }}
