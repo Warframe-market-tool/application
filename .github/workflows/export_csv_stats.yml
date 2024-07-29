@@ -31,7 +31,7 @@ jobs:
       id: list-artifacts
       run: |
         artifacts=$(gh api -X GET /repos/${{ github.repository }}/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | last | .name')
-        echo "artifact_name=$artifacts"artifact_id
+        echo "artifact_name=$artifacts"
       env:
         GH_TOKEN: ${{ github.token }}
     
@@ -40,7 +40,7 @@ jobs:
       with:
         name: WarframeMarketTool-latest
         path: dist/
-        run_id: ${{ env.latest_run_id }}
+        run-id: ${{ env.latest_run_id }}
 
     - name: Update config.json with secrets
       run: |
