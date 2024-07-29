@@ -11,8 +11,8 @@ on:
 
 
 jobs:
-  export-and-push:
-    runs-on: windows-latest
+  get-latest-version-tool:
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout this repository
@@ -80,17 +80,55 @@ jobs:
         EMAIL: ${{ secrets.WARFRAME_BOT_EMAIL }}
         PASSWORD: ${{ secrets.WARFRAME_BOT_PASSWORD }}
 
+
+
+    - name: Upload folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WarframeMarketTool-temp
+        path: dist/
+  
+  run_csv_tool:
+    needs: get-latest-version-tool
+    run-on: windows-latest
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: WarframeMarketTool-temp
+        path: dist/
+    
     - name: Run the artifact with --export-csv
       run: |
-        ./dist/WarframeMarketTool.exe --export-csv
+        .\dist\WarframeMarketTool.exe --export-csv
       shell: powershell
+    
+
+    - name: Upload csv folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: csv
+        path: dist/csv/
+
+  push_csv_file:
+    need: run_csv_tool
+    run-on: ubuntu-latest
+    
+    steps:
+    - name: Download csv artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: csv
+        path: dist/
 
     - name: Clone the target repository
       run: |
+        ls -al dist/csv/
         git clone https://github.com/Warframe-market-tool/daily-stats-export.git daily-stats-export
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN_daily-stats-export }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Copy CSV files to target repository
       run: |
