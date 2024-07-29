@@ -64,10 +64,6 @@ jobs:
       run: |
         zip -r WarframeMarketTool-${{ github.event.release.tag_name }}.zip ./output/*
     
-    - name: Zip the build artifacts under latest tag
-      run: |
-        zip -r WarframeMarketTool-latest.zip ./output/*
-    
     - name: List files in directory
       run: dir
       
@@ -80,5 +76,5 @@ jobs:
         omitNameDuringUpdate: true
         omitBody: true
         omitPrereleaseDuringUpdate: true
-        artifacts: "WarframeMarketTool-${{ github.event.release.tag_name }}.zip,WarframeMarketTool-latest.zip"
+        artifacts: "WarframeMarketTool-${{ github.event.release.tag_name }}.zip"
   
