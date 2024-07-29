@@ -36,13 +36,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Download the artifact
-      run: |
-        gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.latest_run_id }}/artifacts/WarframeMarketTool-latest.zip artifact.zip
-        ls -al
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
     - name: Download build artifacts
       uses: actions/download-artifact@v4
