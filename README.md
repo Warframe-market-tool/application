@@ -4,7 +4,13 @@ Firt, a word to say this project couldn't exist without the hard work of Jean Ba
 
 Thanks to him.
 
+# Download the last version
+
+You can download the last release (already compile for you) as a zip file in the release page of the project : https://github.com/thomas-soutif/warframe-market-tool/releases
+
 # How to compile
+
+If you want to install it on your way, follow these steps
 
 ## Install the ps2exe package
 ```powershell
@@ -30,4 +36,14 @@ You need to edit the ```config.json``` file to include your email and password f
 ```
 
 That's it !
+
+# Run the program while developing
+
+You can simply execute on a Windows terminal
+
+```cmd
+powershell .\run_as_development.ps1
+```
+
+It will create a ```build_dev``` directory where you can configure your ```config.json```
 
