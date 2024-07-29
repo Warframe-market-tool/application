@@ -66,12 +66,14 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
+        name: WarframeMarketTool-latest
         path: dist/
-        run-id: "10151320645"
+        run-id: ${{ env.run_id }}
         github-token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Update config.json with secrets
       run: |
+        dir dist
         jq '.email = env.EMAIL' dist/config.json > dist/config.tmp && mv dist/config.tmp dist/config.json
         jq '.password = env.PASSWORD' dist/config.json > dist/config.tmp && mv dist/config.tmp dist/config.json
       env:
