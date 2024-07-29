@@ -1,0 +1,58 @@
+name: Run periodically the statistic csv and export it in a branch.
+
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  export-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout this repository
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: WarframeMarketTool-latest
+        path: dist/
+
+    - name: Update config.json with secrets
+      run: |
+        jq '.email = env.EMAIL' dist/config.json > dist/config.tmp && mv dist/config.tmp dist/config.json
+        jq '.password = env.PASSWORD' dist/config.json > dist/config.tmp && mv dist/config.tmp dist/config.json
+      env:
+        EMAIL: ${{ secrets.WARFRAME_BOT_EMAIL }}
+        PASSWORD: ${{ secrets.WARFRAME_BOT_PASSWORD }}
+
+    - name: Run the artifact with --export-csv
+      run: |
+        chmod +x dist/WarframeMarketTool.exe
+        ./dist/WarframeMarketTool.exe --export-csv
+      shell: bash
+
+    - name: Clone the target repository
+      run: |
+        git clone https://github.com/Warframe-market-tool/daily-stats-export.git daily-stats-export
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN_daily-stats-export }}
+
+    - name: Copy CSV files to target repository
+      run: |
+        cp dist/csv/*.csv daily-stats-export/
+      shell: bash
+
+    - name: Commit and push changes to target repository
+      run: |
+        cd daily-stats-export
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "Add latest CSV export"
+        git push
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN_daily-stats-export }}
