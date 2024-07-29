@@ -40,7 +40,7 @@ jobs:
       with:
         name: WarframeMarketTool-latest
         path: dist/
-        run-id: ${{ env.latest_run_id }}
+        run-id: $env.latest_run_id
 
     - name: Update config.json with secrets
       run: |
