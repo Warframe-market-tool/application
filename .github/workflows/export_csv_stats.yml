@@ -24,7 +24,9 @@ jobs:
       run: |
         artifacts=$(gh api -X GET /repos/${{ github.repository }}/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | last | .name')
         echo "artifact_name=$artifacts"
-
+      env:
+        GH_TOKEN: ${{ github.token }}
+    
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
