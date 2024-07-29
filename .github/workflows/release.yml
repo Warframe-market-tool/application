@@ -32,10 +32,16 @@ jobs:
     - name: List files in dist directory
       run: dir dist
     
-    - name: Upload folder as artifact
+    - name: Upload folder as artifact for x.x.x
       uses: actions/upload-artifact@v4
       with:
         name: WarframeMarketTool-${{ github.event.release.tag_name }}
+        path: dist/
+
+    - name: Upload folder as artifact for latest
+      uses: actions/upload-artifact@v4
+      with:
+        name: WarframeMarketTool-latest
         path: dist/
   
   create-release:
