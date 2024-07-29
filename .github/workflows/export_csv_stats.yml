@@ -38,7 +38,7 @@ jobs:
           fi
 
           # Search for the run with the specified name
-          run_id=$(echo "$response" | jq -r --arg name "$run_name" '.workflow_runs[] | select(.name == $name) | .id')
+          run_id=$(echo "$response" | jq -r --arg name "$run_name" '.workflow_runs[] | select(.name == $name) | .id' | head -n 1)
 
           # Increment page number
           page=$((page + 1))
@@ -48,7 +48,7 @@ jobs:
           echo "Run with name '$run_name' not found."
           exit 1
         fi
-        echo "run_id_release=$run_id" >> $GITHUB_ENV
+        echo "run_id=$run_id" >> $GITHUB_ENV
         echo "Run ID: $run_id"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
