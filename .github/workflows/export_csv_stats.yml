@@ -68,9 +68,8 @@ jobs:
       with:
         name: WarframeMarketTool-latest
         path: dist/
-        run-id: $run_id
-      env:
-        run_id: ${{env.run_id}}
+        run-id: ${{ env.run_id }}
+    
     - name: Update config.json with secrets
       run: |
         jq '.email = env.EMAIL' dist/config.json > dist/config.tmp && mv dist/config.tmp dist/config.json
