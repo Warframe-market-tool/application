@@ -27,14 +27,22 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: List all artifacts
+    - name: List artifacts from the latest run
       id: list-artifacts
       run: |
-        artifacts=$(gh api -X GET /repos/${{ github.repository }}/actions/artifacts | jq -r '.artifacts | sort_by(.created_at) | last | .name')
-        echo "artifact_name=$artifacts"
+        artifact_name=$(gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.latest_run_id }}/artifacts | jq -r --arg name "${{ github.event.inputs.artifact_name }}" '.artifacts[] | select(.name == $name) | .name')
+        echo "artifact_name=$artifact_name" >> $GITHUB_ENV
       env:
-        GH_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
+    - name: Download the artifact
+      run: |
+        gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.latest_run_id }}/artifacts/${{ env.artifact_name  }}/zip --output artifact.zip
+        ls -al
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
