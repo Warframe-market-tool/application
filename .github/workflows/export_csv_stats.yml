@@ -11,28 +11,36 @@ on:
 
 jobs:
   push_csv_file:
+    needs: run_csv_tool
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # To push a branch 
-    steps:
+        contents: write
     
-      - uses: actions/checkout@v4
+    steps:
+    - name: Download csv artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: csv
+        path: dist/
+
+
+    - uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
           repository: 'Warframe-market-tool/Warframe-market-tool.github.io'
+          path: 'site'
           github-server-url: 'https://github.com'
           token: ${{ secrets.KEY_WEBSITE_IO }}
 
-      - name: Copy CSV files to target repository 
-        run: |
-          touch test.csv
-          cp test.csv csv/
-        shell: bash
-      
-      - uses: fregante/setup-git-user@v2
-      
-      - name: Commit and push changes to target repository
+    - name: Copy CSV files to target repository
+      run: |
+        cp dist/*.csv site/csv/
+      shell: bash
+    
+    - uses: fregante/setup-git-user@v2
+    
+    - name: Commit and push changes to target repository
         run: |
           git add -A
           git commit -m "Add latest CSV export"
