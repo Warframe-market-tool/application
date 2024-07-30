@@ -13,11 +13,12 @@ jobs:
   push_csv_file:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        # Repository name with owner. For example, actions/checkout
-        # Default: ${{ github.repository }}
-        repository: 'Warframe-market-tool/Warframe-market-tool.github.io.git' 
+    
+      - uses: actions/checkout@v4
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: 'Warframe-market-tool/Warframe-market-tool.github.io.git' 
 
       - name: Copy CSV files to target repository
         run: |
