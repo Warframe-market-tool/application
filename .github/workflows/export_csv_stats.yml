@@ -105,7 +105,7 @@ jobs:
 
     - name: Run the artifact with --export-csv
       run: |
-        .\dist\WarframeMarketTool.exe --export-csv
+        .\dist\WarframeMarketTool.exe --no-gui --export-csv
       shell: cmd
     
 
