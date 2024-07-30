@@ -129,19 +129,18 @@ jobs:
     - name: Clone the target repository
       run: |
         ls -al dist
-        git clone https://github.com/Warframe-market-tool/daily-stats-export.git daily-stats-export
-      shell: bash
+        git clone https://github.com/Warframe-market-tool/Warframe-market-tool.github.io.git site
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Copy CSV files to target repository
       run: |
-        cp dist/csv/*.csv daily-stats-export/
+        cp dist/*.csv site/csv/
       shell: bash
 
     - name: Commit and push changes to target repository
       run: |
-        cd daily-stats-export
+        cd site
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add .
@@ -149,4 +148,4 @@ jobs:
         git push
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN_daily-stats-export }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
