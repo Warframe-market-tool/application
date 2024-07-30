@@ -26,6 +26,7 @@ jobs:
         shell: bash
 
       - name: Commit and push changes to target repository
+        - uses: fregante/setup-git-user@v2
         run: |
           cd site
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Warframe-market-tool/Warframe-market-tool.github.io.git
