@@ -333,7 +333,7 @@ function Export-Stats([bool] $RunGui) {
         if (-not (Test-Path -Path $csvPath)) {
             New-Item -ItemType Directory -Path $csvPath
         }
-        $stats | ConvertTo-Csv | Out-File $statsPath
+        $stats | ConvertTo-Csv -NoTypeInformation | Out-File $statsPath
         if ($RunGui){
             $stats | Out-GridView
         }
