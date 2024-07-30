@@ -22,7 +22,7 @@ jobs:
       - name: Copy CSV files to target repository
         run: |
           touch test.csv
-          cp touch.csv site/csv/
+          cp test.csv site/csv/
         shell: bash
 
       - name: Commit and push changes to target repository
