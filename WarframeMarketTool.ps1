@@ -363,9 +363,10 @@ if ($args -notcontains "--no-gui"){
 else{
 
     if ($args -contains "--export-csv") {
-        Export-Stats
+        Export-Stats(0)
         Exit
     }
+
     Exit   
 
 }
