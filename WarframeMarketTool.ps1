@@ -353,7 +353,7 @@ $SetStatsButton.Add_Click({
 
 
 
-if ($args -not -contains "--no-gui"){
+if ($args -notcontains "--no-gui"){
     $Main.ShowDialog() | Out-Null
 }
 else{
