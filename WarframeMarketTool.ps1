@@ -351,9 +351,17 @@ $SetStatsButton.Add_Click({
 
 ################## Arg pass to the program ##########################
 
-if ($args -contains "--export-csv") {
-    Export-Stats
-    Exit
+
+
+if ($args -not -contains "--no-gui"){
+    $Main.ShowDialog() | Out-Null
+}
+else{
+
+    if ($args -contains "--export-csv") {
+        Export-Stats
+        Exit
+    }   
+
 }
 
-$Main.ShowDialog() | Out-Null
