@@ -285,11 +285,7 @@ $StartButton.Add_Click({
     $StateTextBlock.Foreground = "green"
 })
 
-function Export-Stats {
-
-    param(
-        [switch]$RunGui
-    )
+function Export-Stats([switch] $RunGui) {
 
     if ($RunGui) {
         $StateTextBlock.Text = "Unavailable"
