@@ -2,12 +2,7 @@ name: Build the powershell script to an executable and create an archive to down
 
 
 on:
-  push:
-    # Don't run for tags
-    tags-ignore:
-      - '*.*.*'
-    branches:
-      - '**'
+  workflow_dispatch:
   
 jobs:
   build:

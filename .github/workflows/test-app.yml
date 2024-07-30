@@ -34,14 +34,14 @@ jobs:
       run: dir dist
 
     -name: Update config.json with secret
-      run : |
-        cat <<EOF > dist/config.json
-        {
-          "wmUri" : "https://api.warframe.market",
-          "email": "${{ secrets.WARFRAME_BOT_EMAIL }}"",
-          "password": "${{ secrets.WARFRAME_BOT_PASSWORD }}"
-        }
-        EOF
+    run : |
+      cat <<EOF > dist/config.json
+      {
+        "wmUri" : "https://api.warframe.market",
+        "email": "${{ secrets.WARFRAME_BOT_EMAIL }}"",
+        "password": "${{ secrets.WARFRAME_BOT_PASSWORD }}"
+      }
+      EOF
 
     - name: execute custom command
       run: |
