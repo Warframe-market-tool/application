@@ -2,8 +2,7 @@ name: test app
 
 
 on:
-  repository_dispatch:
-    types: [trigger]
+  workflow_dispatch:
 
 
 jobs:
