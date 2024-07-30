@@ -2,12 +2,7 @@ name: Run periodically the statistic csv and export it in a branch.
 
 
 on:
-  push:
-    # Don't run for tags
-    tags-ignore:
-      - '*.*.*'
-    branches:
-      - '**'
+  workflow_dispatch:
 
 
 jobs:
