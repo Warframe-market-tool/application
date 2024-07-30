@@ -128,7 +128,7 @@ jobs:
 
     - name: Clone the target repository
       run: |
-        ls -al dist/csv/
+        ls -al dist
         git clone https://github.com/Warframe-market-tool/daily-stats-export.git daily-stats-export
       shell: bash
       env:
