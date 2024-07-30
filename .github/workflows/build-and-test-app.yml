@@ -1,9 +1,9 @@
-name: test app
-
+name: build and test if app can connect to the api
 
 on:
-  workflow_dispatch:
-
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -46,6 +46,5 @@ jobs:
 
     - name: execute custom command
       run: |
-        cat dist/config.json
         .\dist\WarframeMarketTool.exe --no-gui
       shell: cmd
