@@ -12,29 +12,29 @@ on:
 jobs:
   push_csv_file:
     runs-on: ubuntu-latest
-    
-    - name: Clone the target repository
-      run: |
-        ls -al dist
-        git clone https://github.com/Warframe-market-tool/Warframe-market-tool.github.io.git site
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Clone the target repository
+        run: |
+          ls -al dist
+          git clone https://github.com/Warframe-market-tool/Warframe-market-tool.github.io.git site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Copy CSV files to target repository
-      run: |
-        touch test.csv
-        cp touch.csv site/csv/
-      shell: bash
+      - name: Copy CSV files to target repository
+        run: |
+          touch test.csv
+          cp touch.csv site/csv/
+        shell: bash
 
-    - name: Commit and push changes to target repository
-      run: |
-        cd site
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Warframe-market-tool/Warframe-market-tool.github.io.git
-        git add .
-        git commit -m "Add latest CSV export"
-        git push
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit and push changes to target repository
+        run: |
+          cd site
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Warframe-market-tool/Warframe-market-tool.github.io.git
+          git add .
+          git commit -m "Add latest CSV export"
+          git push
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
