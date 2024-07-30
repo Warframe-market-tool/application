@@ -74,8 +74,9 @@ function Update-Order( [string]$orderId, [Hashtable]$body, [string]$authorizatio
     } -Body ($body | ConvertTo-Json) -ContentType "application/json" | Out-Null
 }
 
+if ($args -notcontains "--no-gui"){
 
-$MainFormXML = (New-Object System.Xml.XmlNodeReader $MainXML)
+    $MainFormXML = (New-Object System.Xml.XmlNodeReader $MainXML)
 $Main = [Windows.Markup.XamlReader]::Load($MainFormXML)
 
 $SearchTextBox = $Main.FindName("SearchTextBox")
@@ -285,6 +286,9 @@ $StartButton.Add_Click({
     $StateTextBlock.Foreground = "green"
 })
 
+
+}
+
 function Export-Stats([switch] $RunGui) {
 
     if ($RunGui) {
@@ -339,10 +343,14 @@ function Export-Stats([switch] $RunGui) {
     }
 }
 
-$SetStatsButton = $Main.FindName("SetStats")
-$SetStatsButton.Add_Click({
-    Export-Stats -RunGui
-})
+if ($args -notcontains "--no-gui"){
+
+    $SetStatsButton = $Main.FindName("SetStats")
+    $SetStatsButton.Add_Click({
+        Export-Stats -RunGui
+    })
+}
+
 
 
 ################## Arg pass to the program ##########################
@@ -357,7 +365,8 @@ else{
     if ($args -contains "--export-csv") {
         Export-Stats
         Exit
-    }   
+    }
+    Exit   
 
 }
 
