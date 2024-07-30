@@ -1,0 +1,35 @@
+name: Store latest artifact
+run-name: "latest version artifact"
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install ps2exe module
+      run: |
+        Install-Module -Name ps2exe -Scope AllUsers -Force -AllowClobber
+        Import-Module ps2exe
+        Get-Command -Module ps2exe
+      shell: powershell
+
+    - name: Run build script
+      run: |
+        .\build.ps1
+      shell: powershell
+      
+    - name: List files in dist directory
+      run: dir dist
+    
+    - name: Upload folder as artifact latest
+      uses: actions/upload-artifact@v4
+      with:
+        name: WarframeMarketTool-latest
+        path: dist/

@@ -18,14 +18,14 @@ jobs:
     - name: Checkout this repository
       uses: actions/checkout@v4
 
-    - name: Get specific workflow run ID
+    - name: Get latest workflow run ID 
       id: get-specific-run-id
       run: |
         # Initialize variables
         page=1
         per_page=100
         run_id=""
-        run_name="Release 0.0.0"
+        run_name="Release latest"
         
         while [ -z "$run_id" ]; do
           # Fetch the current page of workflow runs
@@ -103,7 +103,7 @@ jobs:
         "@
             $configJson | Set-Content -Path dist/config.json
 
-    - name: Run the artifact with --export-csv
+    - name: Run the artifact with --no-gui --export-csv
       run: |
         .\dist\WarframeMarketTool.exe --no-gui --export-csv
       shell: cmd
