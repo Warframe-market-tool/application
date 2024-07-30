@@ -6,7 +6,8 @@ $MainXMLPath = Join-Path $ExePath 'Views\Main.xaml'
 $OMXMLPath = Join-Path $ExePath 'Views\OrderManagement.xaml'
 $ConfigPath = Join-Path $ExePath 'config.json'
 $cookieJwtPath = Join-Path $ExePath 'jwt.txt'
-$statsPath = Join-Path $ExePath 'csv\set_stats.csv'
+$currentDate = (Get-Date).ToString("dd-MM-yyyy")
+$statsPath = Join-Path $ExePath "csv\stats_$currentDate.csv"
 $csvPath = Join-Path $ExePath 'csv'
 # Load the XML files
 Add-Type -AssemblyName PresentationFramework
@@ -37,6 +38,7 @@ if(Test-Path $cookieJwtPath)
     {
         $authorization = $cookieJwt
         $authorization | Out-File $cookieJwtPath
+        Write-Output "Login success with the token to the market api."
     }
 }
 if($authorization -eq "")
@@ -75,7 +77,7 @@ function Update-Order( [string]$orderId, [Hashtable]$body, [string]$authorizatio
     } -Body ($body | ConvertTo-Json) -ContentType "application/json" | Out-Null
 }
 
-if ($args -notcontains "--no-gui"){
+if ($args -notcontains "-no-gui"){
 
     $MainFormXML = (New-Object System.Xml.XmlNodeReader $MainXML)
     $Main = [Windows.Markup.XamlReader]::Load($MainFormXML)
@@ -290,8 +292,7 @@ if ($args -notcontains "--no-gui"){
 
 }
 
-function Export-Stats([switch] $RunGui) {
-
+function Export-Stats([bool] $RunGui) {
     if ($RunGui) {
         $StateTextBlock.Text = "Unavailable"
         $StateTextBlock.Foreground = "red"
@@ -344,11 +345,11 @@ function Export-Stats([switch] $RunGui) {
     }
 }
 
-if ($args -notcontains "--no-gui"){
+if ($args -notcontains "-no-gui"){
 
     $SetStatsButton = $Main.FindName("SetStats")
     $SetStatsButton.Add_Click({
-        Export-Stats -RunGui
+        Export-Stats -RunGui 1
     })
 }
 
@@ -356,19 +357,12 @@ if ($args -notcontains "--no-gui"){
 
 ################## Arg pass to the program ##########################
 
-
-
-if ($args -notcontains "--no-gui"){
+if ($args -notcontains "-no-gui"){
     $Main.ShowDialog() | Out-Null
-}
-else{
-
-    if ($args -contains "--export-csv") {
-        Export-Stats(0)
-        Exit
-    }
-
-    Exit   
-
+    Exit
 }
 
+if($args.contains(("-export-csv"))){
+    Export-Stats -RunGui 0
+    Exit
+}
