@@ -13,7 +13,6 @@ jobs:
   push_csv_file:
     runs-on: ubuntu-latest
     steps:
-      - uses: fregante/setup-git-user@v2
       - name: Clone the target repository
         run: |
           git clone https://github.com/Warframe-market-tool/Warframe-market-tool.github.io.git site
@@ -24,11 +23,11 @@ jobs:
         run: |
           touch test.csv
           cp test.csv site/csv/
+          cd site
         shell: bash
-
+      - uses: fregante/setup-git-user@v2
       - name: Commit and push changes to target repository
         run: |
-          cd site
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Warframe-market-tool/Warframe-market-tool.github.io.git
           git add .
           git commit -m "Add latest CSV export"
