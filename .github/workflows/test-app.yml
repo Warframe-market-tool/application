@@ -1,0 +1,48 @@
+name: Run periodically the statistic csv and export it in a branch.
+
+
+on:
+  push:
+    # Don't run for tags
+    tags-ignore:
+      - '*.*.*'
+    branches:
+      - '**'
+
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install ps2exe module
+      run: |
+        Install-Module -Name ps2exe -Scope AllUsers -Force -AllowClobber
+        Import-Module ps2exe
+        Get-Command -Module ps2exe
+      shell: powershell
+
+    - name: Run build script
+      run: |
+        .\build.ps1
+      shell: powershell
+      
+    - name: List files in dist directory
+      run: dir dist
+
+    -name: Update config.json with secret
+      run : |
+        cat <<EOF > dist/config.json
+        {
+          "wmUri" : "https://api.warframe.market",
+          "email": "${{ secrets.WARFRAME_BOT_EMAIL }}"",
+          "password": "${{ secrets.WARFRAME_BOT_PASSWORD }}"
+        }
+        EOF
+
+    - name: execute custom command
+      run: |
+        cat dist/config.json
