@@ -32,16 +32,22 @@ jobs:
       
     - name: List files in dist directory
       run: dir dist
-
+    
     - name: Update config.json with secret
-      run : |
-        cat <<EOF > dist/config.json
+      shell: pwsh
+      run: |
+        $wmUri = "https://api.warframe.market"
+        $email = "${{ secrets.WARFRAME_BOT_EMAIL }}"
+        $password = "${{ secrets.WARFRAME_BOT_PASSWORD }}"
+        $configJson = @"
         {
-          "wmUri" : "https://api.warframe.market",
-          "email": "${{ secrets.WARFRAME_BOT_EMAIL }}"",
-          "password": "${{ secrets.WARFRAME_BOT_PASSWORD }}"
+          "wmUri" : "$wmUri",
+          "email": "$email",
+          "password": "$password"
         }
-        EOF
+        "@
+            $configJson | Set-Content -Path dist/config.json
+
 
     - name: execute custom command
       run: |
