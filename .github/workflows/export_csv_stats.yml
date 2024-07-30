@@ -141,6 +141,7 @@ jobs:
     - name: Copy CSV files to target repository
       run: |
         cp dist/*.csv site/csv/
+        cd site
       shell: bash
     
     - uses: fregante/setup-git-user@v2
