@@ -53,3 +53,4 @@ jobs:
       run: |
         cat dist/config.json
         .\dist\WarframeMarketTool.exe --no-gui
+      shell: cmd
