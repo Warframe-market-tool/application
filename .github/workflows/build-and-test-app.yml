@@ -1,0 +1,50 @@
+name: build and test if app can connect to the api
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install ps2exe module
+      run: |
+        Install-Module -Name ps2exe -Scope AllUsers -Force -AllowClobber
+        Import-Module ps2exe
+        Get-Command -Module ps2exe
+      shell: powershell
+
+    - name: Run build script
+      run: |
+        .\build.ps1
+      shell: powershell
+      
+    - name: List files in dist directory
+      run: dir dist
+    
+    - name: Update config.json with secret
+      shell: pwsh
+      run: |
+        $wmUri = "https://api.warframe.market"
+        $email = "${{ secrets.WARFRAME_BOT_EMAIL }}"
+        $password = "${{ secrets.WARFRAME_BOT_PASSWORD }}"
+        $configJson = @"
+        {
+          "wmUri" : "$wmUri",
+          "email": "$email",
+          "password": "$password"
+        }
+        "@
+            $configJson | Set-Content -Path dist/config.json
+
+
+    - name: execute custom command
+      run: |
+        .\dist\WarframeMarketTool.exe --no-gui
+      shell: cmd

@@ -1,0 +1,152 @@
+name: Run periodically the statistic csv and export it in the website
+
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  get-latest-version-tool:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout this repository
+      uses: actions/checkout@v4
+
+    - name: Get latest workflow run ID 
+      id: get-specific-run-id
+      run: |
+        # Initialize variables
+        page=1
+        per_page=100
+        run_id=""
+        run_name="latest version artifact"
+        
+        while [ -z "$run_id" ]; do
+          # Fetch the current page of workflow runs
+          response=$(gh api -X GET "/repos/${{ github.repository }}/actions/runs?per_page=$per_page&page=$page")
+          
+          # Check if there are any runs
+          if [ "$(echo "$response" | jq '.workflow_runs | length')" -eq 0 ]; then
+            echo "No more runs found."
+            break
+          fi
+
+          # Search for the run with the specified name
+          run_id=$(echo "$response" | jq -r --arg name "$run_name" '.workflow_runs[] | select(.name == $name) | .id' | head -n 1)
+
+          # Increment page number
+          page=$((page + 1))
+        done
+
+        if [ -z "$run_id" ]; then
+          echo "Run with name '$run_name' not found."
+          exit 1
+        fi
+        echo "run_id=$run_id" >> $GITHUB_ENV
+        echo "Run ID: $run_id"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: List artifacts from the latest run
+      id: list-artifacts
+      run: |
+        artifacts=$(gh api -X GET /repos/${{ github.repository }}/actions/runs/${{ env.run_id }}/artifacts)
+        echo "artifact_name=$artifacts" >> $GITHUB_ENV
+        echo "artifact_name=$artifacts"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: WarframeMarketTool-latest
+        path: dist/
+        run-id: ${{ env.run_id }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Upload folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WarframeMarketTool-temp
+        path: dist/
+  
+  run_csv_tool:
+    needs: get-latest-version-tool
+    runs-on: windows-latest
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: WarframeMarketTool-temp
+        path: dist/
+    
+    - name: Update config.json with secret
+      shell: pwsh
+      run: |
+        $wmUri = "https://api.warframe.market"
+        $email = "${{ secrets.WARFRAME_BOT_EMAIL }}"
+        $password = "${{ secrets.WARFRAME_BOT_PASSWORD }}"
+        $configJson = @"
+        {
+          "wmUri" : "$wmUri",
+          "email": "$email",
+          "password": "$password"
+        }
+        "@
+            $configJson | Set-Content -Path dist/config.json
+
+    - name: Run the artifact with --no-gui --export-csv
+      run: |
+        .\dist\WarframeMarketTool.exe --no-gui --export-csv
+      shell: cmd
+    
+
+    - name: Upload csv folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: csv
+        path: dist/csv/
+
+  push_csv_file:
+    needs: run_csv_tool
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+    
+    steps:
+    - name: Download csv artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: csv
+        path: dist/
+
+
+    - uses: actions/checkout@v4
+      with:
+        # Repository name with owner. For example, actions/checkout
+        # Default: ${{ github.repository }}
+        repository: 'Warframe-market-tool/Warframe-market-tool.github.io'
+        path: 'site'
+        github-server-url: 'https://github.com'
+        token: ${{ secrets.KEY_WEBSITE_IO }}
+
+    - name: Copy CSV files to target repository
+      run: |
+        cp dist/*.csv site/csv/
+      shell: bash
+
+
+    - name: Commit and push changes to target repository
+      run: |
+        cd site
+        git config user.name github-actions[bot]
+        git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+        git add -A
+        git commit -m "Add latest CSV export"
+        git push
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

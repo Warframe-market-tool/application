@@ -1,9 +1,10 @@
-name: Build the powershell script to an executable and create an archive to download the program
-
+name: Store latest artifact
+run-name: "latest version artifact"
 
 on:
-  workflow_dispatch:
-  
+  release:
+    types: [ published ]
+
 jobs:
   build:
     runs-on: windows-latest
@@ -26,3 +27,9 @@ jobs:
       
     - name: List files in dist directory
       run: dir dist
+    
+    - name: Upload folder as artifact latest
+      uses: actions/upload-artifact@v4
+      with:
+        name: WarframeMarketTool-latest
+        path: dist/

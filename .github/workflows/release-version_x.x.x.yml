@@ -32,7 +32,7 @@ jobs:
     - name: List files in dist directory
       run: dir dist
     
-    - name: Upload folder as artifact
+    - name: Upload folder as artifact for x.x.x
       uses: actions/upload-artifact@v4
       with:
         name: WarframeMarketTool-${{ github.event.release.tag_name }}
@@ -61,7 +61,7 @@ jobs:
     - name: List files in directory
       run: dir
       
-    - name: Create Release
+    - name: Create Release for x.x.x
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -71,4 +71,3 @@ jobs:
         omitBody: true
         omitPrereleaseDuringUpdate: true
         artifacts: "WarframeMarketTool-${{ github.event.release.tag_name }}.zip"
-  
