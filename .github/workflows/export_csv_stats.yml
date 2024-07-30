@@ -22,9 +22,9 @@ jobs:
           # Default: ${{ github.repository }}
           repository: 'Warframe-market-tool/Warframe-market-tool.github.io'
           github-server-url: 'https://github.com'
-          token: '{{ secrets.KEY_WEBSITE_IO }}'
+          token: ${{ secrets.KEY_WEBSITE_IO }}
 
-      - name: Copy CSV files to target repository
+      - name: Copy CSV files to target repository 
         run: |
           touch test.csv
           cp test.csv csv/
