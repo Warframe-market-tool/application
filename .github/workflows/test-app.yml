@@ -2,12 +2,7 @@ name: test app
 
 
 on:
-  push:
-    # Don't run for tags
-    tags-ignore:
-      - '*.*.*'
-    branches:
-      - '**'
+  workflow_dispatch:
 
 
 jobs:

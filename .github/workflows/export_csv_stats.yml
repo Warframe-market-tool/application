@@ -2,7 +2,12 @@ name: Run periodically the statistic csv and export it in a branch.
 
 
 on:
-  workflow_dispatch:
+  push:
+    # Don't run for tags
+    tags-ignore:
+      - '*.*.*'
+    branches:
+      - '**'
 
 
 jobs:
@@ -66,18 +71,6 @@ jobs:
         run-id: ${{ env.run_id }}
         github-token: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Update config.json with secrets
-      run: |
-        dir dist
-        jq '.email = env.EMAIL' dist/config.json > dist/config.tmp && mv dist/config.tmp dist/config.json
-        jq '.password = env.PASSWORD' dist/config.json > dist/config.tmp && mv dist/config.tmp dist/config.json
-        cat dist/config.json
-      env:
-        EMAIL: ${{ secrets.WARFRAME_BOT_EMAIL }}
-        PASSWORD: ${{ secrets.WARFRAME_BOT_PASSWORD }}
-
-
-
     - name: Upload folder as artifact
       uses: actions/upload-artifact@v4
       with:
@@ -95,6 +88,21 @@ jobs:
         name: WarframeMarketTool-temp
         path: dist/
     
+    - name: Update config.json with secret
+      shell: pwsh
+      run: |
+        $wmUri = "https://api.warframe.market"
+        $email = "${{ secrets.WARFRAME_BOT_EMAIL }}"
+        $password = "${{ secrets.WARFRAME_BOT_PASSWORD }}"
+        $configJson = @"
+        {
+          "wmUri" : "$wmUri",
+          "email": "$email",
+          "password": "$password"
+        }
+        "@
+            $configJson | Set-Content -Path dist/config.json
+
     - name: Run the artifact with --export-csv
       run: |
         .\dist\WarframeMarketTool.exe --export-csv
