@@ -3,6 +3,14 @@
         Width="1000" Height="500" WindowStartupLocation="CenterScreen">
         
 	<Window.Resources>
+		<Style x:Key="Headers" TargetType="TextBlock">
+			<Setter Property="DockPanel.Dock" Value="Left"/>
+			<Setter Property="Margin" Value="5"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="FontSize" Value="25"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+		</Style>
+
         <Style x:Key="GridCells" TargetType="Border">
             <Setter Property="Margin" Value="10"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -46,53 +54,74 @@
         </Style>
 	</Window.Resources>
 	
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="1*" />
-			<RowDefinition Height="1*" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="1*" />
-			<ColumnDefinition Width="1*" />
-			<ColumnDefinition Width="1*" />
-		</Grid.ColumnDefinitions>
-
-        <Border Style="{StaticResource GridCells}" Grid.Row="0" Grid.Column="0" Canvas.ZIndex="1">
-            <Grid>
-                <TextBox Name="SearchTextBox" FontSize="25"/>
-                <Canvas>
-                    <ListBox Name="SearchListBox"
-                        Canvas.Top="{Binding ActualHeight, ElementName=SearchTextBox}"
-                        BorderBrush="DarkGray" Opacity="0.75" Visibility = "hidden">
-                    </ListBox>
-                </Canvas>
+    <Grid>
+        <Grid Name="LogInModal" Width="Auto" Height="Auto" Visibility="Hidden" ZIndex="1">
+            <Grid Width="Auto" Height="Auto" Background="Black" Opacity="0.65"/>
+            <Grid Width="Auto" Height="Auto" Margin="100" Background="White">
+		        <Grid.RowDefinitions>
+			        <RowDefinition Height="1*" />
+			        <RowDefinition Height="1*" />
+			        <RowDefinition Height="1*" />
+		        </Grid.RowDefinitions>
+                <DockPanel   Grid.Row="0" VerticalAlignment="Center" Width="500">
+                    <TextBlock  Style="{StaticResource Headers}" Text="Email"/>
+                    <TextBox Name="EmailTextBox" FontSize="25"/>
+                </DockPanel>
+                <DockPanel   Grid.Row="1" VerticalAlignment="Center" Width="500">
+                    <TextBlock  Style="{StaticResource Headers}" Text="Password"/>
+                    <PasswordBox Name="PasswordBox" FontSize="25"/>
+                </DockPanel>
+		        <Button      Grid.Row="2" VerticalAlignment="Center" Width="500" Name="LogInButton" Content="Log In"/>
             </Grid>
-        </Border>
-        <Border Style="{StaticResource GridCells}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
-		    <DataGrid Name="StatsDataGrid">
-				<DataGrid.Columns>
-					<DataGridTextColumn Width="*"  Binding="{Binding Name}" Header="Name"/>
-					<DataGridTextColumn Width="75" Binding="{Binding avg}"  Header="Average"/>
-					<DataGridTextColumn Width="75" Binding="{Binding vol}"  Header="Volume"/>
-					<DataGridTextColumn Width="60" Binding="{Binding sell}" Header="In Sell"/>
-					<DataGridTextColumn Width="60" Binding="{Binding buy}"  Header="In Buy"/>
-				</DataGrid.Columns>
-		    </DataGrid>
-        </Border>
-        <Border Style="{StaticResource GridCells}" Grid.Row="1" Grid.Column="0">
-		    <Button    Name="Start">
-			    Start
-		    </Button>
-        </Border>
-        <Border Style="{StaticResource GridCells}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center">
-		    <TextBlock Name="StateTextBlock" VerticalAlignment="Center" FontSize="25" FontWeight="Bold" Foreground="green">
-			    Available
-		    </TextBlock>
-        </Border>
-        <Border Style="{StaticResource GridCells}" Grid.Row="1" Grid.Column="2">
-		    <Button    Name="SetStats">
-			    Statistiques Set
-		    </Button>
-        </Border>
+        </Grid>
+	    <Grid>
+		    <Grid.RowDefinitions>
+			    <RowDefinition Height="1*" />
+			    <RowDefinition Height="1*" />
+		    </Grid.RowDefinitions>
+		    <Grid.ColumnDefinitions>
+			    <ColumnDefinition Width="1*" />
+			    <ColumnDefinition Width="1*" />
+			    <ColumnDefinition Width="1*" />
+		    </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource GridCells}" Grid.Row="0" Grid.Column="0" Canvas.ZIndex="1">
+                <Grid>
+                    <TextBox Name="SearchTextBox" FontSize="25"/>
+                    <Canvas>
+                        <ListBox Name="SearchListBox"
+                            Canvas.Top="{Binding ActualHeight, ElementName=SearchTextBox}"
+                            BorderBrush="DarkGray" Opacity="0.75" Visibility = "hidden">
+                        </ListBox>
+                    </Canvas>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource GridCells}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
+		        <DataGrid Name="StatsDataGrid">
+				    <DataGrid.Columns>
+					    <DataGridTextColumn Width="*"  Binding="{Binding Name}" Header="Name"/>
+					    <DataGridTextColumn Width="75" Binding="{Binding avg}"  Header="Average"/>
+					    <DataGridTextColumn Width="75" Binding="{Binding vol}"  Header="Volume"/>
+					    <DataGridTextColumn Width="60" Binding="{Binding sell}" Header="In Sell"/>
+					    <DataGridTextColumn Width="60" Binding="{Binding buy}"  Header="In Buy"/>
+				    </DataGrid.Columns>
+		        </DataGrid>
+            </Border>
+            <Border Style="{StaticResource GridCells}" Grid.Row="1" Grid.Column="0">
+		        <Button Name="RepriceButton">
+			        Reprice
+		        </Button>
+            </Border>
+            <Border Style="{StaticResource GridCells}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center">
+		        <TextBlock Name="StateTextBlock" VerticalAlignment="Center" FontSize="25" FontWeight="Bold" Foreground="green">
+			        Available
+		        </TextBlock>
+            </Border>
+            <Border Style="{StaticResource GridCells}" Grid.Row="1" Grid.Column="2">
+		        <Button    Name="SetStatsButton">
+			        Statistiques Set
+		        </Button>
+            </Border>
+	    </Grid>
 	</Grid>
 </Window>
