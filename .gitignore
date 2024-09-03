@@ -1,3 +1,5 @@
 dist/*
 config.json
 build_dev/*
+jwt.txt
+stats/*
