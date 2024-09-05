@@ -47,7 +47,7 @@ if ($NoGui) {
 }
 
 $currentDate = (Get-Date).ToString("dd-MM-yyyy")
-$statsPath = "$RootPath/stats/$currentDate.json"
+$statsPath = "$RootPath/stats/stats_$currentDate.json"
 $items = (Invoke-RestMethod -Uri "$wmUri/v1/items" -Method Get).payload.items
 
 if((Test-Path $statsPath) -and (dir $statsPath).CreationTime.Date -eq (Get-Date).Date)

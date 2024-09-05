@@ -70,7 +70,7 @@ jobs:
 
     - name: Copy Json files to target repository
       run: |
-        cp stats/*.json site/csv/
+        cp stats/*.json site/json/
       shell: bash
 
 
