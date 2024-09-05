@@ -14,7 +14,7 @@ if((Test-Path $statsPath) -and (dir $statsPath).CreationTime.Date -eq (Get-Date)
 }
 else
 {
-    $stats = foreach($item in ($items | ? item_name -like "* Set" | select -First 3))
+    $stats = foreach($item in ($items | ? item_name -match " set$"))
     {
         $setStats = (Invoke-RestMethod -Uri "$wmUri/v1/items/$($item.url_name)/statistics" -Method Get).payload.statistics_closed."90days" | select -Last 1
         $setData  = (Invoke-RestMethod -Uri "$wmUri/v1/items/$($item.url_name)"            -Method Get).payload.item.items_in_set
