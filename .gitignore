@@ -6,3 +6,6 @@ build_dev/*
 # user files
 stats/
 jwt.txt
+
+# save files
+*.bak
