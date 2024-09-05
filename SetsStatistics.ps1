@@ -20,7 +20,7 @@ if ($NoGui) {
         Write-Host "Please provide both email and password in the config file."
         exit
     }
-    
+
     $LoginEvent = {
         $loginResp = Invoke-WebRequest -Uri "$wmUri/v1/auth/signin" -Method Post -Headers @{
             "content-type"  = "application/json; utf-8"
@@ -46,7 +46,8 @@ if ($NoGui) {
 
 }
 
-$statsPath = "$RootPath/stats/set_stats.json"
+$currentDate = (Get-Date).ToString("dd-MM-yyyy")
+$statsPath = "$RootPath/stats/$currentDate.json"
 $items = (Invoke-RestMethod -Uri "$wmUri/v1/items" -Method Get).payload.items
 
 if((Test-Path $statsPath) -and (dir $statsPath).CreationTime.Date -eq (Get-Date).Date)
