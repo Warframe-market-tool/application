@@ -1,4 +1,4 @@
-name: Run periodically the statistic csv and export it in the website
+name: Run periodically the statistic json and export it in the website
 
 
 on:
