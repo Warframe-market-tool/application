@@ -1,0 +1,83 @@
+name: Run periodically the statistic csv and export it in the website
+
+
+on:
+  push:
+    branches:
+      - fix-daily-stat-action
+
+
+jobs:
+  run_csv_tool:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout this repository
+      uses: actions/checkout@v4
+
+    - name: Update config.json with secret
+      shell: pwsh
+      run: |
+        $email = "${{ secrets.WARFRAME_BOT_EMAIL }}"
+        $password = "${{ secrets.WARFRAME_BOT_PASSWORD }}"
+        $configJson = @"
+        {
+          "email": "$email",
+          "password": "$password"
+        }
+        "@
+            $configJson | Set-Content -Path dist/config.json
+
+    - name: Run the artifact with --no-gui
+      run: |
+        powershell .\dist\WarframeMarketTool.exe --no-gui --export-csv
+        powershell .\dist\SetsStatistics.ps1 -NoGui
+      shell: cmd
+    
+
+    - name: Upload json folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: stats
+        path: dist/stats/
+
+  push_csv_file:
+    needs: run_csv_tool
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+    
+    steps:
+    - name: Download stats artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: stats
+        path: dist/stats/
+
+
+    - uses: actions/checkout@v4
+      with:
+        # Repository name with owner. For example, actions/checkout
+        # Default: ${{ github.repository }}
+        repository: 'Warframe-market-tool/Warframe-market-tool.github.io'
+        path: 'site'
+        github-server-url: 'https://github.com'
+        token: ${{ secrets.KEY_WEBSITE_IO }}
+
+    - name: Copy Json files to target repository
+      run: |
+        cp dist/stats/*.json site/csv/
+      shell: bash
+
+
+    - name: Commit and push changes to target repository
+      run: |
+        cd site
+        git config user.name github-actions[bot]
+        git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+        git add -A
+        git commit -m "Add latest Json export"
+        git push
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
