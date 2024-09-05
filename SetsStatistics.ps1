@@ -87,6 +87,6 @@ else
     {
         New-Item -Path (Split-Path $statsPath) -ItemType Directory
     }
-    $stats | ConvertTo-Json | Out-File $statsPath | Out-Null
+    $stats | ConvertTo-Json | Out-File $statsPath -Encoding utf8 | Out-Null 
     return $stats
 }
