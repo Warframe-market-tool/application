@@ -2,7 +2,9 @@ name: Run periodically the statistic json and export it in the website
 
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - fix-daily-stat-action
 
 
 jobs:
