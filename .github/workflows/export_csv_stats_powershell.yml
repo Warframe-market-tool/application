@@ -14,7 +14,10 @@ jobs:
     steps:
     - name: Checkout this repository
       uses: actions/checkout@v4
-
+    
+    - name: List files in dist directory
+      run: dir dist
+    
     - name: Update config.json with secret
       shell: pwsh
       run: |
@@ -26,12 +29,11 @@ jobs:
           "password": "$password"
         }
         "@
-            $configJson | Set-Content -Path dist/config.json
+            $configJson | Set-Content -Path config.json
 
     - name: Run the artifact with --no-gui
       run: |
-        powershell .\dist\WarframeMarketTool.exe --no-gui --export-csv
-        powershell .\dist\SetsStatistics.ps1 -NoGui
+        powershell .\SetsStatistics.ps1 -NoGui
       shell: cmd
     
 
