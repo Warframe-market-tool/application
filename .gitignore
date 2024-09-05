@@ -1,5 +1,8 @@
+# config files
 dist/*
 config.json
 build_dev/*
+
+# user files
+stats/
 jwt.txt
-stats/*
