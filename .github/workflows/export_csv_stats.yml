@@ -2,9 +2,7 @@ name: Run periodically the statistic csv and export it in the website
 
 
 on:
-  push:
-    branches:
-      - fix-daily-stat-action
+  workflow_dispatch:
 
 
 jobs:
