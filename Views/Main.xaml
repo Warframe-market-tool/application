@@ -117,11 +117,31 @@
 			        Available
 		        </TextBlock>
             </Border>
-            <Border Style="{StaticResource GridCells}" Grid.Row="1" Grid.Column="2">
-		        <Button    Name="SetStatsButton">
-			        Statistiques Set
-		        </Button>
-            </Border>
+            <Grid Grid.Row="1" Grid.Column="2">
+		        <Grid.RowDefinitions>
+			        <RowDefinition Height="1*" />
+			        <RowDefinition Height="1*" />
+		        </Grid.RowDefinitions>
+		        <Grid.ColumnDefinitions>
+			        <ColumnDefinition Width="1*" />
+			        <ColumnDefinition Width="1*" />
+		        </Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource GridCells}" Grid.Row="0" Grid.Column="0">
+		                <Button Name="SetStatsButton">
+			                Statistiques Set
+		                </Button>
+                    </Border>
+                    <Border Style="{StaticResource GridCells}" Grid.Row="0" Grid.Column="1">
+		                <Button Name="DucatsButton">
+			                Ducats
+		                </Button>
+                    </Border>
+                    <Border Style="{StaticResource GridCells}" Grid.Row="1" Grid.Column="0">
+		                <Button Name="ThanksButton">
+			                Thanks
+		                </Button>
+                    </Border>
+            </Grid>
 	    </Grid>
 	</Grid>
 </Window>

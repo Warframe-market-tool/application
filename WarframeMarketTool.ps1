@@ -1,5 +1,5 @@
 # Constants
-$RootPath      = $PSScriptRoot #[System.AppDomain]::CurrentDomain.BaseDirectory
+$RootPath      = $PSScriptRoot # [System.AppDomain]::CurrentDomain.BaseDirectory # 
 $cookieJwtPath = "$RootPath/jwt.txt"
 $wmUri         = "https://api.warframe.market"
 
@@ -268,8 +268,8 @@ $RepriceButton.Add_Click({
                     [System.Windows.Controls.SelectionChangedEventArgs]$e
                 )
                 $row = ([System.Windows.Controls.DataGrid]$sender).SelectedCells[0].Item
-                Write-Host $row
-                Set-Clipboard "/w $($row.name) Hi, WTB $($order.item.en.item_name) for $($row.platinum)"
+                #Write-Host $row
+                Set-Clipboard "/w $($row.name) Hi, WTB $($order.item.en.item_name) for $($row.platinum) PL"
                 $sender.UnselectAll()
                 
                 $ModalMessageBorder.Visibility = "Hidden"
@@ -285,8 +285,8 @@ $RepriceButton.Add_Click({
                     [System.Windows.Controls.SelectionChangedEventArgs]$e
                 )
                 $row = ([System.Windows.Controls.DataGrid]$sender).SelectedCells[0].Item
-                Write-Host $row
-                Set-Clipboard "/w $($row.name) Hi, WTS $($order.item.en.item_name) for $($row.platinum)"
+                #Write-Host $row
+                Set-Clipboard "/w $($row.name) Hi, WTS $($order.item.en.item_name) for $($row.platinum) PL"
                 $sender.UnselectAll()
                 
                 $ModalMessageBorder.Visibility = "Hidden"
@@ -338,9 +338,24 @@ $SetStatsButton.Add_Click({
     $StateTextBlock.Text = "Unavailable"
     $StateTextBlock.Foreground = "red"
     [System.Windows.Forms.Application]::DoEvents()
-    & "$RootPath\SetsStatistics.ps1" -wmUri $wmUri -RootPath $RootPath | Out-GridView
+    if([System.Windows.Forms.MessageBox]::Show("This button will show you statistics on all sets and parts in those sets.`r`nIt can take some time. Are you sur you want to continue ?" , "Status" , 4, 64) -eq "Yes")
+    {
+        & "$RootPath\SetsStatistics.ps1" -wmUri $wmUri -RootPath $RootPath | Out-GridView
+    }
     $StateTextBlock.Text = "Available"
     $StateTextBlock.Foreground = "green"
+})
+
+### Clipboard Buttons
+$DucatsButton = $Main.FindName("DucatsButton")
+$DucatsButton.Add_Click({
+    Set-Clipboard "If you want, I buy every items you have for 1 pl every 20 ducats"
+})
+
+### Set Statistics
+$ThanksButton = $Main.FindName("ThanksButton")
+$ThanksButton.Add_Click({
+    Set-Clipboard "Thanks for the trade. If you have time, can you please leave a good comment."
 })
 
 

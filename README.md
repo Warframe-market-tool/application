@@ -24,19 +24,6 @@ start build.cmd
 It will do all the necessary step to compile the script, the configuration path and the .xml file needed.
 
 
-# Before you use the program
-
-You need to edit the ```config.json``` file to include your email and password from waframe market.
-
-```json
-{
-    "email": "",
-    "password": ""
-}
-```
-
-That's it !
-
 # Run the program while developing
 
 You can simply execute on a Windows terminal
@@ -47,3 +34,35 @@ powershell .\run_as_development.ps1
 
 It will create a ```build_dev``` directory where you can configure your ```config.json```
 
+
+# Execute without compiling
+
+You can start the shortcut with absolute path so you can move it
+
+
+# How to use
+
+## Research bar
+
+It allow you to see stats on specific set, parts of the set and your orders on it.
+
+
+## Reprice
+
+The reprice button reprice every visible orders you have on your account automaticaly.
+Taking curent orders and statistics of the items to give you the best price.
+
+If there is an order that give more or equal that what you ask for, 
+it will show you another screen with top orders and ask you what ou want to do.
+
+Exemple: the auto price want you to sell for 11 PL but someone want to buy for 10 PL.
+
+
+## Set stats
+
+Statistics that take time to run but show you best investments for buying parts and selling sets.
+
+
+## Others buttons
+
+Set to clipboard predefined messages.
