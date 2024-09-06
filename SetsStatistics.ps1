@@ -7,7 +7,6 @@ Param (
     $NoGui
 )
 
-
 if ($NoGui) {
     Write-Host "Running SetStatistics in no-GUI mode."
     $cookieJwtPath = "$RootPath/jwt.txt"
@@ -46,8 +45,7 @@ if ($NoGui) {
 
 }
 
-$currentDate = (Get-Date).ToString("dd-MM-yyyy")
-$statsPath = "$RootPath/stats/stats_$currentDate.json"
+$statsPath = "$RootPath/stats/set-stats_$(Get-Date -Format "dd-MM-yyyy").json"
 $items = (Invoke-RestMethod -Uri "$wmUri/v1/items" -Method Get).payload.items
 
 if((Test-Path $statsPath) -and (dir $statsPath).CreationTime.Date -eq (Get-Date).Date)
