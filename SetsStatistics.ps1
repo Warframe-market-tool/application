@@ -5,7 +5,7 @@ Param (
     $RootPath = $PSScriptRoot
 )
 
-$statsPath = "$RootPath/stats/set_stats.json"
+$statsPath = "$RootPath/stats/set-stats_$(Get-Date -Format "yyyy-MM-dd_HH-mm-ss").json"
 $items = (Invoke-RestMethod -Uri "$wmUri/v1/items" -Method Get).payload.items
 
 if((Test-Path $statsPath) -and (dir $statsPath).CreationTime.Date -eq (Get-Date).Date)
