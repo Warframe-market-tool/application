@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  run_csv_tool:
+  run_sets_statistics:
     runs-on: windows-latest
     
     steps:
@@ -19,7 +19,6 @@ jobs:
     - name: Run the program
       run: |
         powershell .\SetsStatistics.ps1
-        powershell .\riven.ps1
       shell: cmd
     
     - name: List files in dist directory
@@ -28,22 +27,52 @@ jobs:
     - name: Upload json folder as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: stats
+        name: stats-sets
         path: stats/
 
+    run_riven_statistics:
+      runs-on: windows-latest
+      
+      steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+      
+      - name: List files in dist directory
+        run: dir
+      
+      - name: Run the program
+        run: |
+          powershell .\riven.ps1
+        shell: cmd
+      
+      - name: List files in dist directory
+        run: dir stats
+        
+      - name: Upload json folder as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stats-riven
+          path: stats/
+
+
   push_csv_file:
-    needs: run_csv_tool
+    needs: [run_sets_statistics, run_riven_statistics]
     runs-on: ubuntu-latest
     permissions:
         contents: write
     
     steps:
-    - name: Download stats artifacts
+    - name: Download stats artifacts for sets
       uses: actions/download-artifact@v4
       with:
-        name: stats
+        name: stats-sets
         path: stats/
-
+    
+    - name: Download stats artifacts for riven
+      uses: actions/download-artifact@v4
+      with:
+        name: stats-riven
+        path: stats/
 
     - uses: actions/checkout@v4
       with:
