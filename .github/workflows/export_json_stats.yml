@@ -19,6 +19,7 @@ jobs:
     - name: Run the program
       run: |
         powershell .\SetsStatistics.ps1
+        powershell .\riven.ps1
       shell: cmd
     
     - name: List files in dist directory
