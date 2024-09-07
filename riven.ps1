@@ -72,5 +72,9 @@ foreach($riven in $rivens | ? item_name -eq "phage")
     }
 }
 
-$stats | ConvertTo-Json | Out-File $statsPath | Out-Null
+if(-not (Test-Path (Split-Path $statsPath))){
+    New-Item -Path (Split-Path $statsPath) -ItemType Directory
+}
+$stats | ConvertTo-Json | Out-File $statsPath -Encoding utf8 | Out-Null
+
 return $stats
