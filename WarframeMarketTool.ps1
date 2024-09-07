@@ -1,5 +1,28 @@
+# Function to know if the execution is script or exe
+function isRunningExec {
+    if ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName -eq 'powershell' -or 
+        [System.Diagnostics.Process]::GetCurrentProcess().ProcessName -eq 'pwsh') {
+        # Running as a PowerShell script
+        return 0
+    } else {
+        # Running as an EXE, use BaseDirectory for the location of the executable
+        return 1
+    }
+}
+# Function to detect if the script is running as an executable or a PowerShell script
+function Get-RootPath {
+    if ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName -eq 'powershell' -or 
+        [System.Diagnostics.Process]::GetCurrentProcess().ProcessName -eq 'pwsh') {
+        # Running as a PowerShell script
+        return $PSScriptRoot
+    } else {
+        # Running as an EXE, use BaseDirectory for the location of the executable
+        return [System.AppDomain]::CurrentDomain.BaseDirectory
+    }
+}
+
 # Constants
-$RootPath      = $PSScriptRoot # [System.AppDomain]::CurrentDomain.BaseDirectory # 
+$RootPath      = Get-RootPath
 $cookieJwtPath = "$RootPath/jwt.txt"
 $wmUri         = "https://api.warframe.market"
 
@@ -338,9 +361,21 @@ $SetStatsButton.Add_Click({
     $StateTextBlock.Text = "Unavailable"
     $StateTextBlock.Foreground = "red"
     [System.Windows.Forms.Application]::DoEvents()
-    if([System.Windows.Forms.MessageBox]::Show("This button will show you statistics on all sets and parts in those sets.`r`nIt can take some time. Are you sur you want to continue ?" , "Status" , 4, 64) -eq "Yes")
+    if ([System.Windows.Forms.MessageBox]::Show(
+            "This button will show you statistics on all sets and parts in those sets.`r`nIt can take some time. Are you sure you want to continue?", 
+            "Status", 
+            [System.Windows.Forms.MessageBoxButtons]::YesNo, 
+            [System.Windows.Forms.MessageBoxIcon]::Information) -eq [System.Windows.Forms.DialogResult]::Yes
+        ) 
     {
-        & "$RootPath\SetsStatistics.ps1" -wmUri $wmUri -RootPath $RootPath | Out-GridView
+        if (isRunningExec -eq 1) {
+            # Running as an Executable
+            & "$RootPath\SetsStatistics.exe" -wmUri $wmUri -RootPath $RootPath | Out-GridView
+        } else {
+            # Running as script
+            & "$RootPath\SetsStatistics.ps1" -wmUri $wmUri -RootPath $RootPath | Out-GridView
+        }
+        
     }
     $StateTextBlock.Text = "Available"
     $StateTextBlock.Foreground = "green"

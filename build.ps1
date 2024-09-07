@@ -8,7 +8,7 @@ if (-not (Test-Path -Path ".\dist")) {
 
 # Compile the PowerShell script into an executable
 Invoke-ps2exe .\WarframeMarketTool.ps1 .\dist\WarframeMarketTool.exe
-
+Invoke-ps2exe .\SetsStatistics.ps1 .\dist\SetsStatistics.exe
 
 # Copy the Views folder to the dist directory
 Copy-Item -Path ".\Views" -Destination ".\dist\Views" -Recurse -Force

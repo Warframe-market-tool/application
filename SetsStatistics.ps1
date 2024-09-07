@@ -2,7 +2,7 @@ Param (
     [String]
     $wmUri = "https://api.warframe.market",
     [String]
-    $RootPath = $PSScriptRoot,
+    $RootPath = $PSScriptRoot
 )
 
 $statsPath = "$RootPath/stats/set-economy_stats_$(Get-Date -Format "dd-MM-yyyy").json"

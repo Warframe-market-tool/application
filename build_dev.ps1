@@ -8,6 +8,7 @@ if (-not (Test-Path -Path ".\build_dev")) {
 
 # Compile the PowerShell script into an executable
 Invoke-ps2exe .\WarframeMarketTool.ps1 .\build_dev\WarframeMarketTool.exe
+Invoke-ps2exe .\SetsStatistics.ps1 .\build_dev\SetsStatistics.exe
 
 
 # Copy the Views folder to the dist directory
