@@ -3,49 +3,9 @@ Param (
     $wmUri = "https://api.warframe.market",
     [String]
     $RootPath = $PSScriptRoot,
-    [Switch]
-    $NoGui
 )
 
-if ($NoGui) {
-    Write-Host "Running SetStatistics in no-GUI mode."
-    $cookieJwtPath = "$RootPath/jwt.txt"
-    $ConfigPath = "$RootPath/config.json"
-    $config = Get-Content -Raw -Path $ConfigPath | ConvertFrom-Json
-    $email         = $config.email
-    $password      = $config.password
-
-    if ([string]::IsNullOrWhiteSpace($config.email) -or [string]::IsNullOrWhiteSpace($config.password)) {
-        Write-Host "Please provide both email and password in the config file."
-        exit
-    }
-
-    $LoginEvent = {
-        $loginResp = Invoke-WebRequest -Uri "$wmUri/v1/auth/signin" -Method Post -Headers @{
-            "content-type"  = "application/json; utf-8"
-            "accept"        = "application/json"
-            "Authorization" = ""
-        } -Body (@{
-            "email"     = $email
-            "password"  = $password
-            "auth_type" = "header"
-        } | ConvertTo-Json) -ContentType "application/json"
-
-        if($loginResp -ne $null -and $loginResp.StatusCode -eq 200)
-        {
-            $authorization = $loginResp.Headers.Authorization
-            $authorization | Out-File $cookieJwtPath
-            $user          = ($loginResp.Content | ConvertFrom-Json).payload.user
-        }
-        else
-        {   Write-Host "failed login $($loginResp.StatusCode) $($loginResp.StatusDescription)"
-            exit
-        }
-    }
-
-}
-
-$statsPath = "$RootPath/stats/set-stats_$(Get-Date -Format "dd-MM-yyyy").json"
+$statsPath = "$RootPath/stats/stats_$(Get-Date -Format "dd-MM-yyyy").json"
 $items = (Invoke-RestMethod -Uri "$wmUri/v1/items" -Method Get).payload.items
 
 if((Test-Path $statsPath) -and (dir $statsPath).CreationTime.Date -eq (Get-Date).Date)
