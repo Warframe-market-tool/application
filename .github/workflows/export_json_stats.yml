@@ -16,22 +16,9 @@ jobs:
     - name: List files in dist directory
       run: dir
     
-    - name: Update config.json with secret
-      shell: pwsh
+    - name: Run the program
       run: |
-        $email = "${{ secrets.WARFRAME_BOT_EMAIL }}"
-        $password = "${{ secrets.WARFRAME_BOT_PASSWORD }}"
-        $configJson = @"
-        {
-          "email": "$email",
-          "password": "$password"
-        }
-        "@
-            $configJson | Set-Content -Path config.json
-
-    - name: Run the artifact with --no-gui
-      run: |
-        powershell .\SetsStatistics.ps1 -NoGui
+        powershell .\SetsStatistics.ps1
       shell: cmd
     
     - name: List files in dist directory
