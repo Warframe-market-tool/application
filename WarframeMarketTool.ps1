@@ -1,3 +1,8 @@
+Param (
+    [Switch]
+    $test
+)
+
 # Function to know if the execution is script or exe
 function isRunningExec {
     if ([System.Diagnostics.Process]::GetCurrentProcess().ProcessName -eq 'powershell' -or 
@@ -62,6 +67,13 @@ if(Test-Path $cookieJwtPath)
         $authorization = $cookieJwt
         $authorization | Out-File $cookieJwtPath
     }
+}
+
+#Test
+
+if($test)
+{
+     Write-Host "[Test] Application is running."
 }
 
 ## Begin Main UI

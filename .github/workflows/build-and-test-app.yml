@@ -46,5 +46,5 @@ jobs:
 
     - name: execute custom command
       run: |
-        .\dist\WarframeMarketTool.exe --no-gui
+        .\dist\WarframeMarketTool.exe --test
       shell: cmd
