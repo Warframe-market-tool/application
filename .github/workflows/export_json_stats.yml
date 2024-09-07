@@ -30,29 +30,29 @@ jobs:
         name: stats-sets
         path: stats/
 
-    run_riven_statistics:
-      runs-on: windows-latest
+  run_riven_statistics:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout this repository
+      uses: actions/checkout@v4
+    
+    - name: List files in dist directory
+      run: dir
+    
+    - name: Run the program
+      run: |
+        powershell .\riven.ps1
+      shell: cmd
+    
+    - name: List files in dist directory
+      run: dir stats
       
-      steps:
-      - name: Checkout this repository
-        uses: actions/checkout@v4
-      
-      - name: List files in dist directory
-        run: dir
-      
-      - name: Run the program
-        run: |
-          powershell .\riven.ps1
-        shell: cmd
-      
-      - name: List files in dist directory
-        run: dir stats
-        
-      - name: Upload json folder as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: stats-riven
-          path: stats/
+    - name: Upload json folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: stats-riven
+        path: stats/
 
 
   push_csv_file:
