@@ -55,7 +55,7 @@ jobs:
         path: stats/
 
 
-  push_csv_file:
+  push_json_file:
     needs: [run_sets_statistics, run_riven_statistics]
     runs-on: ubuntu-latest
     permissions:
