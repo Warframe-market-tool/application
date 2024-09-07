@@ -74,6 +74,7 @@ if(Test-Path $cookieJwtPath)
 if($test)
 {
      Write-Host "[Test] Application is running."
+     exit
 }
 
 ## Begin Main UI
