@@ -5,7 +5,7 @@
     $RootPath = $PSScriptRoot
 )
 
-$statsPath = "$RootPath/stats/riven-stats_$(Get-Date -Format "yyyy-MM-dd_HH-mm-ss").json"
+$statsPath = "$RootPath/stats/riven-stats_$(Get-Date -Format "dd-MM-yyyy").json"
 $attributes = (Invoke-restmethod -Uri "$wmUri/v1/riven/attributes" -Method GET).payload.attributes
 $rivens = (Invoke-restmethod -Uri "$wmUri/v1/riven/items" -Method GET).payload.items | ? item_name -in @(
     "Phage",
