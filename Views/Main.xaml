@@ -132,8 +132,8 @@
 		                </Button>
                     </Border>
                     <Border Style="{StaticResource GridCells}" Grid.Row="0" Grid.Column="1">
-		                <Button Name="DucatsButton">
-			                Ducats
+		                <Button Name="OrderIgnoreButton">
+			                Order Ignore
 		                </Button>
                     </Border>
                     <Border Style="{StaticResource GridCells}" Grid.Row="1" Grid.Column="0">

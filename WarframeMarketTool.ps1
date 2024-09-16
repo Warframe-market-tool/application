@@ -27,9 +27,10 @@ function Get-RootPath {
 }
 
 # Constants
-$RootPath      = Get-RootPath
-$cookieJwtPath = "$RootPath/jwt.txt"
-$wmUri         = "https://api.warframe.market"
+$RootPath        = Get-RootPath
+$cookieJwtPath   = "$RootPath/jwt.txt"
+$orderIgnorePath = "$RootPath/.orderignore"
+$wmUri           = "https://api.warframe.market"
 
 $MainXMLPath = "$RootPath/Views/Main.xaml"
 $OMXMLPath   = "$RootPath/Views/OrderManagement.xaml"
@@ -52,6 +53,11 @@ function Update-Order( [string]$orderId, [Hashtable]$body, [string]$authorizatio
 function Format-Info ($orderType, $name, $newPrice, $oldPrice, $bestPrice, $average)
 {
     return "You $(switch($orderType) { "sell" {"WTS"} "buy" {"WTB"}}) $name for $newPrice PL (before $oldPrice) but someone sell it for $bestPrice PL - avg : $([Math]::Round($average, 2))"
+}
+
+function Test-OrderIgnore ($url_name)
+{
+    return $true -notin (Get-Content $orderIgnorePath | % {$url_name -like $_})
 }
 
 # Test JWT token
@@ -220,7 +226,7 @@ $RepriceButton.Add_Click({
         "accept"        = "application/json"
 	    "Authorization" = $authorization
     }
-    foreach ($order in ($profileOrders.payload.sell_orders + $profileOrders.payload.buy_orders | ? visible -eq $true)) {
+    foreach ($order in ($profileOrders.payload.sell_orders + $profileOrders.payload.buy_orders | ? {$_.visible -eq $true -and (Test-OrderIgnore -url_name $_.item.url_name)})) {
         $body = @{
             "order_id" = $order.id
             "platinum" = $order.platinum
@@ -243,51 +249,51 @@ $RepriceButton.Add_Click({
             "platform" = $order.platform
             "language" = $order.region
         }
-        $minPercent = 0.1
+        $minPercent = 0.05
         $maxPercent = 0.25
         
         $topSellOrders = $topOrders.data.sell | ? {$_.user.ingamename -ne $user.ingame_name}
         $topBuyOrders  = $topOrders.data.buy  | ? {$_.user.ingamename -ne $user.ingame_name}
         
-        $avgPrice  = ($stats | select -Last 1).moving_avg 
-        $sumVolume = ($stats | select -Last 1).volume  
+        $medianPrice = ($stats | select -Last 1).median 
+        $sumVolume   = ($stats | select -Last 1).volume  
 
-        $bestSellPrice = $topSellOrders.platinum -gt ($avgPrice * (1 + $minPercent)) | select -First 1
-        $bestBuyPrice  = $topBuyOrders.platinum  -lt ($avgPrice * (1 - $minPercent)) | select -First 1
+        $bestSellPrice = $topSellOrders.platinum -gt ($medianPrice * (1 + $minPercent)) | select -First 1
+        $bestBuyPrice  = $topBuyOrders.platinum  -lt ($medianPrice * (1 - $minPercent)) | select -First 1
         
-        #Write-Host "a. $($order.item.en.item_name) - $bestSellPrice - $newPrice - $($bestSellOrder.platinum) $([int]$avgPrice)"
+        #Write-Host "a. $($order.item.en.item_name) - $bestSellPrice - $newPrice - $($bestSellOrder.platinum) $([int]$medianPrice)"
         $info = switch($order.order_type)
         {
             "sell" {
                 $newPrice = $bestSellPrice - 1
-                if($newPrice -gt $avgPrice * (1 + $maxPercent)) {
-                    #"You WTS $($order.item.en.item_name) for $newPrice PL (before $($order.platinum)) but the average price is $([int]$avgPrice)"
-                    $newPrice = [math]::Round($avgPrice * (1 + $maxPercent))
+                if($newPrice -gt $medianPrice * (1 + $maxPercent)) {
+                    #"You WTS $($order.item.en.item_name) for $newPrice PL (before $($order.platinum)) but the average price is $([int]$medianPrice)"
+                    $newPrice = [math]::Round($medianPrice * (1 + $maxPercent))
                 }
-                if($bestSellPrice -eq $null -or $newPrice -lt $avgPrice * (1 + $minPercent)) {
-                    #"You WTS $($order.item.en.item_name) for $newPrice PL (before $($order.platinum)) but the average price is $([int]$avgPrice)"
-                    $newPrice = [math]::Round($avgPrice * (1 + $minPercent))
+                if($bestSellPrice -eq $null -or $newPrice -lt $medianPrice * (1 + $minPercent)) {
+                    #"You WTS $($order.item.en.item_name) for $newPrice PL (before $($order.platinum)) but the average price is $([int]$medianPrice)"
+                    $newPrice = [math]::Round($medianPrice * (1 + $minPercent))
                 }
                 if($newPrice -le ($topBuyOrders | select -ExpandProperty platinum -First 1)) {
-                    Format-Info -orderType $_ -name $order.item.en.item_name -newPrice $newPrice -oldPrice $order.platinum -bestPrice ($topBuyOrders | select -ExpandProperty platinum -First 1) -average $avgPrice
+                    Format-Info -orderType $_ -name $order.item.en.item_name -newPrice $newPrice -oldPrice $order.platinum -bestPrice ($topBuyOrders | select -ExpandProperty platinum -First 1) -average $medianPrice
                 }
             }
             "buy" {
                 $newPrice = $bestBuyPrice + 1
-                if($newPrice -lt $avgPrice * (1 - $maxPercent)) {
-                    #"You WTB $($order.item.en.item_name) for $newPrice PL (before $($order.platinum)) but the average price is $([int]$avgPrice)"
-                    $newPrice = [math]::Round($avgPrice * (1 - $maxPercent))
+                if($newPrice -lt $medianPrice * (1 - $maxPercent)) {
+                    #"You WTB $($order.item.en.item_name) for $newPrice PL (before $($order.platinum)) but the average price is $([int]$medianPrice)"
+                    $newPrice = [math]::Round($medianPrice * (1 - $maxPercent))
                 }
-                if($bestBuyPrice -eq $null -or $newPrice -gt $avgPrice * (1 - $minPercent)) {
-                    #"You WTS $($order.item.en.item_name) for $newPrice PL (before $($order.platinum)) but the average price is $([int]$avgPrice)"
-                    $newPrice = [math]::Round($avgPrice * (1 - $minPercent))
+                if($bestBuyPrice -eq $null -or $newPrice -gt $medianPrice * (1 - $minPercent)) {
+                    #"You WTS $($order.item.en.item_name) for $newPrice PL (before $($order.platinum)) but the average price is $([int]$medianPrice)"
+                    $newPrice = [math]::Round($medianPrice * (1 - $minPercent))
                 }
                 if($newPrice -ge ($topSellOrders | select -ExpandProperty platinum -First 1)) {
-                    Format-Info -orderType $_ -name $order.item.en.item_name -newPrice $newPrice -oldPrice $order.platinum -bestPrice ($topSellOrders | select -ExpandProperty platinum -First 1) -average $avgPrice
+                    Format-Info -orderType $_ -name $order.item.en.item_name -newPrice $newPrice -oldPrice $order.platinum -bestPrice ($topSellOrders | select -ExpandProperty platinum -First 1) -average $medianPrice
                 }
             }
         }
-        #Write-Host "b. $($order.item.en.item_name) - $bestSellPrice - $newPrice - $($bestSellOrder.platinum) $([int]$avgPrice)"
+        #Write-Host "b. $($order.item.en.item_name) - $bestSellPrice - $newPrice - $($bestSellOrder.platinum) $([int]$medianPrice)"
         if($info)
         {
             ### UI
@@ -395,9 +401,13 @@ $SetStatsButton.Add_Click({
 })
 
 ### Clipboard Buttons
-$DucatsButton = $Main.FindName("DucatsButton")
+$DucatsButton = $Main.FindName("OrderIgnoreButton")
 $DucatsButton.Add_Click({
-    Set-Clipboard "If you want, I buy every items you have for 1 pl every 20 ducats"
+    if(-not (Test-Path $orderIgnorePath))
+    {
+        New-Item $orderIgnorePath -ItemType File
+    }
+    start $orderIgnorePath
 })
 
 ### Set Statistics
