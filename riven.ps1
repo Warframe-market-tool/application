@@ -27,7 +27,7 @@ $rivens = (Invoke-restmethod -Uri "$wmUri/v1/riven/items" -Method GET).payload.i
 $stats = @()
 foreach($riven in $rivens)
 {
-    if($riven.item_name -ne "phage" -or $riven.item_name -ne "hate")
+    if($riven | $_.item_name -ne "phage")
     {
         continue
     }
