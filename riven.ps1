@@ -25,8 +25,12 @@ $rivens = (Invoke-restmethod -Uri "$wmUri/v1/riven/items" -Method GET).payload.i
 )
 
 $stats = @()
-foreach($riven in $rivens | Where-Object { $_.item_name -eq "phage" -or $_.item_name -eq "hate" })
+foreach($riven in $rivens)
 {
+    if($_.item_name -ne "phage" or $_.item_name -ne "hate")
+    {
+        continue
+    }
     $stats += [PSCustomObject]@{
         name  = $riven.item_name
         stats = ($attributes | ? {$_.search_only -eq $false -and ($_.exclusive_to -eq $null -or $_.exclusive_to -Contains $riven.riven_type)} | % {
