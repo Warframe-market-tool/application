@@ -25,7 +25,7 @@ $rivens = (Invoke-restmethod -Uri "$wmUri/v1/riven/items" -Method GET).payload.i
 )
 
 $stats = @()
-foreach($riven in $rivens | ? item_name -eq "phage")
+foreach($riven in $rivens)
 {
     $stats += [PSCustomObject]@{
         name  = $riven.item_name
