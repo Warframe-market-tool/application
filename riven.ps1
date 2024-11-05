@@ -25,7 +25,7 @@ $rivens = (Invoke-restmethod -Uri "$wmUri/v1/riven/items" -Method GET).payload.i
 )
 
 $stats = @()
-foreach($riven in $rivens)
+foreach($riven in $rivens | Where-Object { $_.item_name -eq "phage" -or $_.item_name -eq "hate" })
 {
     $stats += [PSCustomObject]@{
         name  = $riven.item_name
@@ -67,7 +67,7 @@ foreach($riven in $rivens)
                     #Write-Host "$rivenUri&negative_stats=$($_.url_name)"
                 }
             }
-            $rivenStats
+            $rivenStats | ConvertTo-Json
         })
     }
 }
