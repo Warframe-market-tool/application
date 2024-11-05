@@ -28,10 +28,6 @@ $stats = @()
 $final_stats = @()
 foreach($riven in $rivens)
 {
-    if($riven.item_name -ne "phage")
-    {
-        continue
-    }
     $stats += [PSCustomObject]@{
         name  = $riven.item_name
         stats = ($attributes | ? {$_.search_only -eq $false -and ($_.exclusive_to -eq $null -or $_.exclusive_to -Contains $riven.riven_type)} | % {
