@@ -1,0 +1,72 @@
+name: Just a test to try stats for rivens
+
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  run_riven_statistics:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout this repository
+      uses: actions/checkout@v4
+    
+    - name: List files in dist directory
+      run: dir
+    
+    - name: Run the program
+      run: |
+        powershell .\riven.ps1
+      shell: cmd
+    
+    - name: List files in dist directory
+      run: dir stats
+      
+    - name: Upload json folder as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: stats-riven
+        path: stats/
+
+
+  push_json_file:
+    needs: [run_riven_statistics]
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+    
+    steps:    
+    - name: Download stats artifacts for riven
+      uses: actions/download-artifact@v4
+      with:
+        name: stats-riven
+        path: stats/
+
+    - uses: actions/checkout@v4
+      with:
+        # Repository name with owner. For example, actions/checkout
+        # Default: ${{ github.repository }}
+        repository: 'Warframe-market-tool/Warframe-market-tool.github.io'
+        path: 'site'
+        github-server-url: 'https://github.com'
+        token: ${{ secrets.KEY_WEBSITE_IO }}
+
+    - name: Copy Json files to target repository
+      run: |
+        cp stats/*.json site/json/
+      shell: bash
+
+
+    - name: Commit and push changes to target repository
+      run: |
+        cd site
+        git config user.name github-actions[bot]
+        git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+        git add -A
+        git commit -m "Add latest Json export - TEST"
+        git push
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
