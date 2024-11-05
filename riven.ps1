@@ -71,7 +71,7 @@ foreach($riven in $rivens)
                     #Write-Host "$rivenUri&negative_stats=$($_.url_name)"
                 }
             }
-            $rivenStats | ConvertTo-Json
+            $rivenStats
         })
     }
 }
