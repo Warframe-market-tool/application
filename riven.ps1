@@ -25,6 +25,7 @@ $rivens = (Invoke-restmethod -Uri "$wmUri/v1/riven/items" -Method GET).payload.i
 )
 
 $stats = @()
+$final_stats = @()
 foreach($riven in $rivens)
 {
     if($riven.item_name -ne "phage")
@@ -71,6 +72,7 @@ foreach($riven in $rivens)
                     #Write-Host "$rivenUri&negative_stats=$($_.url_name)"
                 }
             }
+            $final_stats += $rivenStats
             $rivenStats
         })
     }
@@ -79,6 +81,6 @@ foreach($riven in $rivens)
 if(-not (Test-Path (Split-Path $statsPath))){
     New-Item -Path (Split-Path $statsPath) -ItemType Directory
 }
-$stats | ConvertTo-Json | Out-File $statsPath -Encoding utf8 | Out-Null
+$final_stats | ConvertTo-Json | Out-File $statsPath -Encoding utf8 | Out-Null
 
-return $stats
+return $final_stats
